@@ -1,1 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Payments Portfolio Diagnostic</title>
+  <meta name="description" content="Evaluate growth durability, monetization depth, and margin resilience across commercial banking payments portfolios." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div class="brand-text">
+          <div class="brand-title">Payments Portfolio Diagnostic</div>
+          <div class="brand-subtitle">Commercial banking payments • Operator-grade framework</div>
+        </div>
+      </div>
+
+      <nav class="topnav">
+        <a class="topnav-link" href="#about">About</a>
+        <a class="topnav-link" href="#tool">Tool</a>
+        <a class="topnav-link" href="#results">Results</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="about">
+      <div class="container hero-grid">
+        <div>
+          <h1>Evaluate a commercial payments franchise in minutes.</h1>
+          <p class="lead">
+            This lightweight diagnostic scores a payments portfolio across growth, monetization, margin durability,
+            rail readiness, balance contribution, and governance maturity — then produces executive priorities for the next 90 days.
+          </p>
+
+          <div class="callouts">
+            <div class="callout">
+              <div class="callout-title">V1 scope</div>
+              <div class="callout-text">
+                Designed for <b>commercial banking payments</b> portfolios (ACH, wires, RTP/FedNow, cross-border, FX-enabled flows, liquidity overlays).
+              </div>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Portable</div>
+              <div class="callout-text">
+                The framework is portable to <b>networks & B2B fintechs</b> by swapping rail economics and governance assumptions.
+                Tokenized rails (stablecoins) are a planned V2 extension.
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-cta">
+            <button id="btnStart" class="btn btn-primary">Start Diagnostic</button>
+            <button id="btnReset" class="btn btn-ghost" title="Clears answers">Reset</button>
+          </div>
+
+          <div class="micro">
+            No data is stored. This runs locally in your browser.
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-card-title">What you’ll get</div>
+          <ul class="checklist">
+            <li>Portfolio maturity score (0–100)</li>
+            <li>Monetization / margin durability / readiness sub-scores</li>
+            <li>Pillar heatmap (green / yellow / red)</li>
+            <li>Primary constraints & risks (executive bullets)</li>
+            <li>90-day priorities with owners and metrics</li>
+          </ul>
+          <div class="hero-card-note">
+            Tip: Use this in interviews to walk through how you diagnose a franchise and set priorities.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOL -->
+    <section class="section" id="tool">
+      <div class="container">
+        <div class="section-head">
+          <h2>Diagnostic inputs</h2>
+          <div class="progress">
+            <div class="progress-meta">
+              <span id="progressText">0% complete</span>
+              <span class="dot">•</span>
+              <span id="answeredText">0 answered</span>
+            </div>
+            <div class="progress-bar">
+              <div id="progressFill" class="progress-fill" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="pillarsContainer" class="pillars"></div>
+
+        <div class="actions">
+          <button id="btnCompute" class="btn btn-primary">Compute Results</button>
+          <button id="btnCopy" class="btn btn-secondary" disabled>Copy Executive Summary</button>
+        </div>
+
+        <div class="micro">
+          Note: If a question doesn’t apply (e.g., cross-border), select the “Not applicable” option where available.
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="section results" id="results">
+      <div class="container">
+        <div class="section-head">
+          <h2>Results</h2>
+          <p class="subtle">
+            Outputs are directional and designed to reflect operator-grade portfolio judgment, not false precision.
+          </p>
+        </div>
+
+        <div id="resultsEmpty" class="empty">
+          Run the diagnostic to see your results dashboard here.
+        </div>
+
+        <div id="resultsContainer" class="results-grid hidden">
+          <div class="card">
+            <div class="card-title">Overall score</div>
+            <div class="score-row">
+              <div>
+                <div class="score-big" id="overallScore">—</div>
+                <div class="score-label" id="maturityLabel">—</div>
+              </div>
+              <div class="score-badges">
+                <div class="badge" id="badgeMonetization">Monetization: —</div>
+                <div class="badge" id="badgeMargin">Margin durability: —</div>
+                <div class="badge" id="badgeReadiness">Strategic readiness: —</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Pillar heatmap</div>
+            <div id="heatmap" class="heatmap"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Executive diagnosis</div>
+            <ul id="diagnosisList" class="bullets"></ul>
+          </div>
+
+          <div class="card">
+            <div class="card-title">90-day priorities</div>
+            <div id="prioritiesList" class="priorities"></div>
+          </div>
+
+          <div class="card full">
+            <div class="card-title">Suggested 30/60/90 plan</div>
+            <div id="plan3090" class="plan"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div class="micro">
+          Built as a lightweight demonstration of commercial payments portfolio strategy & monetization thinking.
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="model.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
