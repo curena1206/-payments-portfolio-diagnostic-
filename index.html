@@ -3,92 +3,137 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Payments Portfolio Diagnostic</title>
-  <meta name="description" content="Evaluate growth durability, monetization depth, and margin resilience across commercial banking payments portfolios." />
-  <link rel="stylesheet" href="styles.css" />
+  <title>Payments Portfolio Diagnostic — Carlos Urena</title>
+  <meta name="description" content="A structured diagnostic for commercial payments franchises — scoring monetization depth, margin resilience, and operating model maturity. Built by Carlos Urena." />
+  <link rel="stylesheet" href="styles.css?v=2" />
 </head>
 
 <body>
+  <!-- Site nav -->
+  <nav style="background:#0f1f3d;border-bottom:2px solid #b7882c;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:44px;position:sticky;top:0;z-index:100;">
+    <a href="/" style="font-family:Georgia,serif;font-size:13.5px;color:rgba(255,255,255,0.85);text-decoration:none;letter-spacing:0.01em;">← carlosurena.com</a>
+    <span style="font-size:12px;color:rgba(255,255,255,0.45);letter-spacing:0.04em;text-transform:uppercase;">Payments Portfolio Diagnostic</span>
+    <a href="https://www.linkedin.com/in/carlosurena/" target="_blank" rel="noopener" style="font-size:12px;color:rgba(255,255,255,0.55);text-decoration:none;">LinkedIn ↗</a>
+  </nav>
+
+  <!-- TOP BAR -->
   <header class="topbar">
     <div class="container topbar-inner">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true"></div>
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="0" y="0" width="7" height="7" rx="1.5" fill="white" opacity=".9"/>
+            <rect x="9" y="0" width="7" height="7" rx="1.5" fill="white" opacity=".45"/>
+            <rect x="0" y="9" width="7" height="7" rx="1.5" fill="white" opacity=".45"/>
+            <rect x="9" y="9" width="7" height="7" rx="1.5" fill="white" opacity=".2"/>
+          </svg>
+        </div>
         <div class="brand-text">
           <div class="brand-title">Payments Portfolio Diagnostic</div>
-          <div class="brand-subtitle">Commercial banking payments • Operator-grade framework</div>
+          <div class="brand-subtitle">Commercial banking · Operator-grade framework</div>
         </div>
       </div>
-
       <nav class="topnav">
         <a class="topnav-link" href="#about">About</a>
-        <a class="topnav-link" href="#tool">Tool</a>
+        <a class="topnav-link" href="#pillars-explained">Framework</a>
+        <a class="topnav-link" href="#tool">Diagnostic</a>
         <a class="topnav-link" href="#results">Results</a>
+        <a class="topnav-link topnav-cta" href="https://www.linkedin.com/in/carlosurena/" target="_blank" rel="noopener">Connect →</a>
       </nav>
     </div>
   </header>
 
   <main>
+
     <!-- HERO -->
     <section class="hero" id="about">
-      <div class="container hero-grid">
-        <div>
-          <h1>Evaluate a commercial payments franchise in minutes.</h1>
-          <p class="lead">
-            This lightweight diagnostic scores a payments portfolio across growth, monetization, margin durability,
-            rail readiness, balance contribution, and governance maturity — then produces executive priorities for the next 90 days.
+      <div class="container hero-inner">
+
+        <div class="hero-content">
+          <div class="author-badge">
+            <div class="author-avatar" aria-hidden="true">CU</div>
+            <div>
+              <div class="author-name">Carlos Urena</div>
+              <div class="author-institutions">Citi &nbsp;·&nbsp; Deutsche Bank &nbsp;·&nbsp; HSBC &nbsp;·&nbsp; Mashreq</div>
+            </div>
+          </div>
+
+          <h1 class="hero-headline">
+            Evaluate a commercial payments franchise<br/>
+            <em>the way operators do.</em>
+          </h1>
+
+          <p class="hero-lead">
+            This diagnostic scores a payments portfolio across six structural pillars —
+            then produces executive-grade diagnosis and sequenced 90-day priorities.
+            Built to reflect how a franchise is actually run, not how it reports.
           </p>
 
-          <div class="callouts">
-            <div class="callout">
-              <div class="callout-title">V1 scope</div>
-              <div class="callout-text">
-                Designed for <b>commercial banking payments</b> portfolios (ACH, wires, RTP/FedNow, cross-border, FX-enabled flows, liquidity overlays).
-              </div>
-            </div>
-            <div class="callout">
-              <div class="callout-title">Portable</div>
-              <div class="callout-text">
-                The framework is portable to <b>networks & B2B fintechs</b> by swapping rail economics and governance assumptions.
-                Tokenized rails (stablecoins) are a planned V2 extension.
-              </div>
-            </div>
+          <div class="hero-bio">
+            <p>
+              Over 20 years I've led commercial payments businesses across four global institutions —
+              spanning USD clearing, wires, ACH, cross-border, FX-enabled flows, RTP/FedNow, and
+              liquidity overlays — owning P&Ls from $50M to $200M+ and driving revenue architecture,
+              pricing strategy, and margin discipline. This diagnostic reflects how I think about a
+              payments portfolio: six structural pillars with a rules-based output and 90-day
+              priorities built for execution. I built it because the frameworks I wished existed
+              when I inherited underperforming franchises didn't.
+            </p>
           </div>
 
-          <div class="hero-cta">
-            <button id="btnStart" class="btn btn-primary">Start Diagnostic</button>
-            <button id="btnReset" class="btn btn-ghost" title="Clears answers">Reset</button>
+          <div class="hero-actions">
+            <button id="btnStart" class="btn btn-primary btn-lg">Start Diagnostic</button>
+            <button id="btnReset" class="btn btn-ghost-light">Reset</button>
+            <a href="https://www.linkedin.com/in/carlosurena/" target="_blank" rel="noopener" class="btn btn-outline">
+              Connect on LinkedIn
+            </a>
           </div>
 
-          <div class="micro">
-            No data is stored. This runs locally in your browser.
+          <div class="hero-micro">No data stored. Runs entirely in your browser.</div>
+        </div>
+
+        <div class="hero-card-wrap">
+          <div class="hero-card">
+            <div class="hero-card-eyebrow">What you'll get</div>
+            <ul class="checklist">
+              <li><span class="check-icon">✓</span><span>Portfolio maturity score <strong>(0–100)</strong></span></li>
+              <li><span class="check-icon">✓</span><span>Monetization · Margin durability · Strategic readiness sub-scores</span></li>
+              <li><span class="check-icon">✓</span><span>Pillar heatmap across all six dimensions</span></li>
+              <li><span class="check-icon">✓</span><span>Executive diagnosis with tier classification</span></li>
+              <li><span class="check-icon">✓</span><span>90-day priorities with owners and KPIs</span></li>
+              <li><span class="check-icon">✓</span><span>Sequenced 30/60/90 execution plan</span></li>
+            </ul>
+            <div class="hero-card-divider"></div>
+            <div class="scope-label">V1 Scope</div>
+            <div class="scope-rails">
+              <span class="rail-tag">USD Clearing</span>
+              <span class="rail-tag">Wires</span>
+              <span class="rail-tag">ACH</span>
+              <span class="rail-tag">Cross-border</span>
+              <span class="rail-tag">FX-enabled flows</span>
+              <span class="rail-tag">RTP / FedNow</span>
+              <span class="rail-tag">Liquidity overlays</span>
+            </div>
+
           </div>
         </div>
 
-        <div class="hero-card">
-          <div class="hero-card-title">What you’ll get</div>
-          <ul class="checklist">
-            <li>Portfolio maturity score (0–100)</li>
-            <li>Monetization / margin durability / readiness sub-scores</li>
-            <li>Pillar heatmap (green / yellow / red)</li>
-            <li>Primary constraints & risks (executive bullets)</li>
-            <li>90-day priorities with owners and metrics</li>
-          </ul>
-          <div class="hero-card-note">
-            Tip: Use this in interviews to walk through how you diagnose a franchise and set priorities.
-          </div>
-        </div>
       </div>
     </section>
 
     <!-- TOOL -->
-    <section class="section" id="tool">
+    <section class="section tool-section" id="tool">
       <div class="container">
-        <div class="section-head">
-          <h2>Diagnostic inputs</h2>
-          <div class="progress">
+        <div class="section-label">Diagnostic</div>
+        <div class="tool-head">
+          <div>
+            <h2 class="section-title">Diagnostic inputs</h2>
+            <p class="section-lead" style="margin-top:6px;">42 questions across six pillars. Answer what you know — partial answers still produce directional output.</p>
+          </div>
+          <div class="progress-wrap">
             <div class="progress-meta">
               <span id="progressText">0% complete</span>
-              <span class="dot">•</span>
+              <span class="dot">·</span>
               <span id="answeredText">0 answered</span>
             </div>
             <div class="progress-bar">
@@ -97,82 +142,188 @@
           </div>
         </div>
 
-        <div id="pillarsContainer" class="pillars"></div>
+        <!-- Scenario loader -->
+        <div id="scenarioContainer" class="scenario-section"></div>
+        <div id="scenarioLabel" class="scenario-active-label hidden"></div>
+
+        <div id="pillarsContainer" class="pillars-list"></div>
 
         <div class="actions">
-          <button id="btnCompute" class="btn btn-primary">Compute Results</button>
-          <button id="btnCopy" class="btn btn-secondary" disabled>Copy Executive Summary</button>
+          <button id="btnCompute" class="btn btn-primary btn-lg">Compute Results</button>
+          <button id="btnCopy" class="btn btn-secondary" disabled>Download PDF</button>
         </div>
 
-        <div class="micro">
-          Note: If a question doesn’t apply (e.g., cross-border), select the “Not applicable” option where available.
+        <div class="tool-micro">
+          Answer from direct operational experience — not aspirationally. MR4 (cross-border corridor strategy) includes a 'Not applicable' option if cross-border is outside your portfolio scope.
+          Answer from direct operational experience — not aspirationally.
         </div>
       </div>
     </section>
 
     <!-- RESULTS -->
-    <section class="section results" id="results">
+    <section class="section results-section" id="results">
       <div class="container">
-        <div class="section-head">
-          <h2>Results</h2>
-          <p class="subtle">
-            Outputs are directional and designed to reflect operator-grade portfolio judgment, not false precision.
-          </p>
-        </div>
+        <div class="section-label">Results</div>
+        <h2 class="section-title">Portfolio assessment</h2>
+        <p class="section-lead">
+          Outputs are directional and reflect operator-grade portfolio judgment — not false precision.
+          Use these as a starting point for leadership conversation, not a final verdict.
+        </p>
 
-        <div id="resultsEmpty" class="empty">
-          Run the diagnostic to see your results dashboard here.
+        <div id="resultsEmpty" class="empty-state">
+          <div class="empty-icon">◎</div>
+          <div class="empty-text">Run the diagnostic to see your results dashboard here.</div>
         </div>
 
         <div id="resultsContainer" class="results-grid hidden">
-          <div class="card">
-            <div class="card-title">Overall score</div>
+
+          <div class="card card-score">
+            <div class="card-eyebrow">Overall score</div>
             <div class="score-row">
-              <div>
+              <div class="score-main">
                 <div class="score-big" id="overallScore">—</div>
-                <div class="score-label" id="maturityLabel">—</div>
+                <div class="score-denom">/100</div>
               </div>
-              <div class="score-badges">
-                <div class="badge" id="badgeMonetization">Monetization: —</div>
-                <div class="badge" id="badgeMargin">Margin durability: —</div>
-                <div class="badge" id="badgeReadiness">Strategic readiness: —</div>
+              <div class="score-right">
+                <div class="score-label" id="maturityLabel">—</div>
+                <div class="score-badges">
+                  <div class="badge" id="badgeMonetization">Monetization: —</div>
+                  <div class="badge" id="badgeMargin">Margin durability: —</div>
+                  <div class="badge" id="badgeReadiness">Strategic readiness: —</div>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="card">
-            <div class="card-title">Pillar heatmap</div>
+            <div class="card-eyebrow">Pillar heatmap</div>
             <div id="heatmap" class="heatmap"></div>
           </div>
 
           <div class="card">
-            <div class="card-title">Executive diagnosis</div>
-            <ul id="diagnosisList" class="bullets"></ul>
+            <div class="card-eyebrow">What drove your score</div>
+            <div id="pillarNarratives" class="pillar-narratives"></div>
           </div>
 
           <div class="card">
-            <div class="card-title">90-day priorities</div>
-            <div id="prioritiesList" class="priorities"></div>
+            <div class="card-eyebrow">Executive diagnosis</div>
+            <ul id="diagnosisList" class="diagnosis-list"></ul>
           </div>
 
-          <div class="card full">
-            <div class="card-title">Suggested 30/60/90 plan</div>
-            <div id="plan3090" class="plan"></div>
+          <div class="card">
+            <div class="card-eyebrow">90-day priorities</div>
+            <div id="prioritiesList" class="priorities-list"></div>
           </div>
+
+          <div class="card card-full">
+            <div class="card-eyebrow">Suggested 30/60/90 execution plan</div>
+            <div id="plan3090" class="plan-grid"></div>
+          </div>
+
+          <!-- Results action bar -->
+          <div class="card card-full results-actions-bar">
+            <div class="results-actions-inner">
+              <div class="results-actions-label">Try another scenario or reset to answer fresh.</div>
+              <div class="results-actions-right">
+                <button id="btnTryScenario" class="btn btn-secondary" onclick="document.getElementById('tool').scrollIntoView({behavior:'smooth'})">
+                  ← Back to diagnostic
+                </button>
+                <button id="btnResetResults" class="btn btn-ghost">Reset all answers</button>
+                <button id="btnCopy2" class="btn btn-primary">Download PDF</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
 
+    <!-- WHY 6 PILLARS -->
+    <section class="section pillars-explained" id="pillars-explained">
+      <div class="container">
+        <div class="section-label">Framework</div>
+        <h2 class="section-title">Why six pillars?</h2>
+        <p class="section-lead">
+          Together these six dimensions represent the minimum viable operating system of a commercial
+          payments franchise. If one collapses, portfolio performance becomes unstable — even when volume looks strong.
+        </p>
+
+        <div class="pillars-grid">
+          <div class="pillar-card">
+            <div class="pillar-card-number">01</div>
+            <div class="pillar-card-name">Revenue Architecture</div>
+            <div class="pillar-card-weight">20% weight</div>
+            <p class="pillar-card-desc">How the portfolio makes money and how resilient that mix is. A franchise with volume but a single revenue lever — fee, FX, or balance — is one rate cycle away from a P&L event.</p>
+            <div class="pillar-card-signal">Key signal: revenue growth vs. volume growth</div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-card-number">02</div>
+            <div class="pillar-card-name">Growth Engine Quality</div>
+            <div class="pillar-card-weight">10% weight</div>
+            <p class="pillar-card-desc">Whether growth is structural and repeatable — or relationship-dependent and fragile. Pipelines dominated by price shopping signal weak differentiation regardless of conversion rate.</p>
+            <div class="pillar-card-signal">Key signal: GTM repeatability + workflow embed depth</div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-card-number">03</div>
+            <div class="pillar-card-name">Margin & Cost Structure</div>
+            <div class="pillar-card-weight">20% weight</div>
+            <p class="pillar-card-desc">The hidden levers: exception rates, repair costs, override frequency, unit economics. Most franchises lose more margin to operational leakage than to pricing decisions.</p>
+            <div class="pillar-card-signal">Key signal: exception/repair rate + override controls</div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-card-number">04</div>
+            <div class="pillar-card-name">Multi-Rail Strategy</div>
+            <div class="pillar-card-weight">15% weight</div>
+            <p class="pillar-card-desc">RTP/FedNow readiness, ISO 20022 maturity, routing optimization, and corridor discipline. Rail strategy is increasingly a revenue lever, not just an infrastructure decision.</p>
+            <div class="pillar-card-signal">Key signal: real-time send capability + routing economics</div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-card-number">05</div>
+            <div class="pillar-card-name">Balance Sheet & Liquidity</div>
+            <div class="pillar-card-weight">20% weight</div>
+            <p class="pillar-card-desc">Franchise value beyond fees. In commercial banking, the payments-to-balance linkage is where ROE is actually made or lost — and most portfolios under-monetize it systematically.</p>
+            <div class="pillar-card-signal">Key signal: balance-adjusted pricing + rate-cycle sensitivity</div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-card-number">06</div>
+            <div class="pillar-card-name">Governance & Operating Model</div>
+            <div class="pillar-card-weight">15% weight</div>
+            <p class="pillar-card-desc">Strategy without execution is noise. Clear P&L ownership, pricing governance, KPI cadence, and cross-functional accountability determine whether the other five pillars actually move.</p>
+            <div class="pillar-card-signal">Key signal: P&L authority + pricing governance + KPI cadence</div>
+          </div>
+        </div>
+
+        <div class="framework-note">
+          <span class="framework-note-label">Design principle</span>
+          <span class="framework-note-text">This framework is normative — it reflects practitioner judgment about what a well-run commercial payments franchise looks like, not statistical benchmarks. Use it to start a conversation, not end one.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
     <footer class="footer">
       <div class="container footer-inner">
-        <div class="micro">
-          Built as a lightweight demonstration of commercial payments portfolio strategy & monetization thinking.
+        <div class="footer-left">
+          <div class="footer-name">Carlos Urena</div>
+          <div class="footer-desc">Payments Portfolio &amp; Commercialization Leader</div>
+          <div class="footer-institutions">Citi · Deutsche Bank · HSBC · Mashreq</div>
+        </div>
+        <div class="footer-right">
+          <a href="https://www.linkedin.com/in/carlosurena/" target="_blank" rel="noopener" class="footer-link">
+            linkedin.com/in/carlosurena →
+          </a>
+          <div class="footer-micro">V1 · Commercial banking payments · No data stored</div>
         </div>
       </div>
     </footer>
+
   </main>
 
-  <script src="model.js"></script>
-  <script src="app.js"></script>
+  <!-- Back to top -->
+  <button id="backToTop" class="back-to-top hidden" aria-label="Back to top">↑</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="model.js?v=6"></script>
+  <script src="app.js?v=14"></script>
 </body>
 </html>
