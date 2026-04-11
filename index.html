@@ -3,38 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Payments Portfolio Diagnostic — Carlos Urena</title>
-  <meta name="description" content="A structured diagnostic for commercial payments franchises — scoring monetization depth, margin resilience, and operating model maturity. Built by Carlos Urena." />
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <title>Payments Portfolio Diagnostic — Carlos Ureña</title>
+  <meta name="description" content="A structured diagnostic for commercial payments franchises — scoring monetization depth, margin resilience, and operating model maturity. Built by Carlos Ureña." />
+  <link rel="stylesheet" href="styles.css?v=4" />
+  <style>
+    body { font-family: Georgia, serif !important; font-size: 17px !important; }
+    p, li, .hero-lead, .section-lead, .scenario-desc, .pillar-card-desc,
+    .diag-text, .priority-why, .plan-col li, .tool-micro, .option-label,
+    .option-sub, .q-desc, .q-title { font-family: Georgia, serif !important; font-size: 17px !important; }
+  </style>
 </head>
 
 <body>
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <rect x="0" y="0" width="7" height="7" rx="1.5" fill="white" opacity=".9"/>
-            <rect x="9" y="0" width="7" height="7" rx="1.5" fill="white" opacity=".45"/>
-            <rect x="0" y="9" width="7" height="7" rx="1.5" fill="white" opacity=".45"/>
-            <rect x="9" y="9" width="7" height="7" rx="1.5" fill="white" opacity=".2"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <div class="brand-title">Payments Portfolio Diagnostic</div>
-          <div class="brand-subtitle">Commercial banking · Operator-grade framework</div>
-        </div>
-      </div>
-      <nav class="topnav">
-        <a class="topnav-link topnav-back" href="/">← carlosurena.com</a>
-        <a class="topnav-link" href="#about">About</a>
-        <a class="topnav-link" href="#tool">Diagnostic</a>
-        <a class="topnav-link" href="#results">Results</a>
-        <a class="topnav-link topnav-cta" href="https://www.linkedin.com/in/carlosurena/" target="_blank" rel="noopener">Connect →</a>
-      </nav>
+  <!-- NAV -->
+  <nav class="site-nav">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="/" style="font-family:Georgia,serif;font-size:14px;font-weight:normal;color:#fff;text-decoration:none;letter-spacing:0.01em;">Carlos Ureña</a>
+      <span style="color:rgba(255,255,255,0.25);font-size:13px;">·</span>
+      <span style="font-family:Georgia,serif;font-size:13px;color:rgba(255,255,255,0.6);letter-spacing:0.01em;">Payments Franchise Index</span>
     </div>
-  </header>
+    <div class="site-nav-links">
+      <a href="#about">About</a>
+      <a href="#tool">Diagnostic</a>
+      <a href="#results">Results</a>
+    </div>
+  </nav>
 
   <main>
 
@@ -43,31 +36,29 @@
       <div class="container hero-inner">
 
         <div class="hero-content">
-          <div class="author-badge">
-            <div class="author-avatar" aria-hidden="true">CU</div>
-            <div>
-              <div class="author-name">Carlos Ureña</div>
-              <div class="author-institutions">Citi &nbsp;·&nbsp; Deutsche Bank &nbsp;·&nbsp; HSBC &nbsp;·&nbsp; Mashreq</div>
-            </div>
-          </div>
+          <div class="hero-eyebrow">Payments Franchise Index &nbsp;·&nbsp; PFI &nbsp;·&nbsp; V1 &nbsp;·&nbsp; Free</div>
 
-          <h1 class="hero-headline">
-            Most payments franchises cannot see where revenue is lost.<br/>
-            <em>This makes it visible.</em>
-          </h1>
+          <h1 class="hero-headline" style="font-size:32px;font-family:Georgia,serif;font-weight:normal;line-height:1.2;letter-spacing:-0.01em;color:#fff;margin-bottom:18px;">Most payments franchises cannot see where revenue is lost.</h1>
+          <h2 class="hero-subheadline" style="font-family:Georgia,serif;font-size:17px;font-weight:normal;color:#b7882c;margin:0 0 18px;font-style:italic;">This makes it measurable.</h2>
 
           <p class="hero-lead">
-            This was built to address a recurring gap in underperforming payments franchises.
             Revenue leakage exists across pricing, routing, and cost structures, but is rarely visible at the portfolio level.
-            This diagnostic makes it measurable and actionable.
+          </p>
+          <p class="hero-lead">
+            This diagnostic makes it measurable and directly actionable.
           </p>
 
+          <div class="hero-how">
+            <div class="how-label">How it works</div>
+            <div class="how-steps">
+              <div class="how-step"><span class="how-num">1</span><span>Operator-level questions that expose where revenue is lost across the portfolio</span></div>
+              <div class="how-step"><span class="how-num">2</span><span>Portfolio score, pillar heatmap, and prioritized actions</span></div>
+              <div class="how-step"><span class="how-num">3</span><span>Results define a 30/60/90-day execution plan</span></div>
+            </div>
+          </div>
           <div class="hero-actions">
             <button id="btnStart" class="btn btn-primary btn-lg">Start Diagnostic</button>
             <button id="btnReset" class="btn btn-ghost-light">Reset</button>
-            <a href="https://www.linkedin.com/in/carlosurena/" target="_blank" rel="noopener" class="btn btn-outline">
-              Connect on LinkedIn
-            </a>
           </div>
 
           <div class="hero-micro">No data stored. Runs entirely in your browser.</div>
@@ -76,9 +67,9 @@
         <div class="hero-card-wrap">
           <div class="hero-card">
             <div class="hero-card-eyebrow">What you'll get</div>
-            <p style="font-family:Helvetica,sans-serif;font-size:12.5px;color:#4a5568;line-height:1.6;margin:0 0 14px;">Outputs designed to make revenue leakage visible and actionable.</p>
+            <p style="font-size:13px;color:rgba(255,255,255,0.8);margin:0 0 12px;line-height:1.6;">Outputs designed to make revenue leakage visible and actionable.</p>
             <ul class="checklist">
-              <li><span class="check-icon">✓</span><span>Portfolio maturity score <strong>(0–100)</strong></span></li>
+              <li><span class="check-icon">✓</span><span>PFI Score <strong>(0–100)</strong></span></li>
               <li><span class="check-icon">✓</span><span>Monetization · Margin durability · Strategic readiness sub-scores</span></li>
               <li><span class="check-icon">✓</span><span>Pillar heatmap across all six dimensions</span></li>
               <li><span class="check-icon">✓</span><span>Executive diagnosis with tier classification</span></li>
@@ -98,7 +89,7 @@
         <div class="tool-head">
           <div>
             <h2 class="section-title">Diagnostic inputs</h2>
-            <p class="section-lead" style="margin-top:6px;">42 operator-level questions that expose where revenue is lost across the portfolio. Answer what you know — partial answers still produce directional output.</p>
+            <p class="section-lead" style="margin-top:6px;max-width:100%;">Operator-level questions that expose where revenue is lost across the portfolio. Answer based on direct operational experience. The output remains directionally valid.</p>
           </div>
           <div class="progress-wrap">
             <div class="progress-meta">
@@ -113,6 +104,7 @@
         </div>
 
         <!-- Scenario loader -->
+        <p style="font-size:13px;color:var(--muted,#6b7280);margin:0 0 12px;font-style:italic;">These scenarios reflect real portfolio conditions observed in practice, not theoretical cases.</p>
         <div id="scenarioContainer" class="scenario-section"></div>
         <div id="scenarioLabel" class="scenario-active-label hidden"></div>
 
@@ -123,7 +115,7 @@
           <button id="btnCopy" class="btn btn-secondary" disabled>Download PDF</button>
         </div>
 
-        <div class="tool-micro">
+        <div class="tool-micro" style="max-width:100%;">
           Answer from direct operational experience — not aspirationally. MR4 (cross-border corridor strategy) includes a 'Not applicable' option if cross-border is outside your portfolio scope.
         </div>
       </div>
@@ -134,21 +126,20 @@
       <div class="container">
         <div class="section-label">Results</div>
         <h2 class="section-title">Portfolio assessment</h2>
-        <p class="section-lead">
+        <p class="section-lead" style="max-width:100%;">
           The objective is not precision. It is visibility into where revenue is being lost.
-          Outputs are directional and reflect operator-grade portfolio judgment — not false precision.
-          Use these as a starting point for leadership conversation, not a final verdict.
+          The output reflects operator-grade portfolio judgment and highlights where action is required first.
         </p>
 
         <div id="resultsEmpty" class="empty-state">
           <div class="empty-icon">◎</div>
-          <div class="empty-text">Run the diagnostic to see your results dashboard here.</div>
+          <div class="empty-text">Run the diagnostic to see your PFI results dashboard here.</div>
         </div>
 
         <div id="resultsContainer" class="results-grid hidden">
 
           <div class="card card-score">
-            <div class="card-eyebrow">Overall score</div>
+            <div class="card-eyebrow">PFI Score</div>
             <div class="score-row">
               <div class="score-main">
                 <div class="score-big" id="overallScore">—</div>
@@ -190,6 +181,17 @@
             <div id="plan3090" class="plan-grid"></div>
           </div>
 
+          <!-- Go deeper CTA -->
+          <div class="card card-full" style="background:#0f1f3d;border-top:3px solid #b7882c;margin-top:8px;">
+            <div style="padding:24px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+              <div>
+                <div style="font-family:Georgia,serif;font-size:17px;color:#ffffff;margin-bottom:8px;">The recoverable revenue is already inside the portfolio.</div>
+                <div style="font-family:Georgia,serif;font-size:13px;color:#b0bec5;line-height:1.6;max-width:520px;">This becomes measurable within weeks once the portfolio is examined directly.</div>
+              </div>
+              <a href="/consulting.html" style="display:inline-block;background:#b7882c;color:#0f1f3d;font-family:Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:14px 28px;white-space:nowrap;">Examine the portfolio</a>
+            </div>
+          </div>
+
           <!-- Results action bar -->
           <div class="card card-full results-actions-bar">
             <div class="results-actions-inner">
@@ -199,6 +201,7 @@
                   ← Back to diagnostic
                 </button>
                 <button id="btnResetResults" class="btn btn-ghost">Reset all answers</button>
+                <button id="btnShareLink" class="btn btn-secondary" disabled>Copy shareable link</button>
                 <button id="btnCopy2" class="btn btn-primary">Download PDF</button>
               </div>
             </div>
@@ -211,25 +214,19 @@
     <!-- FRAMEWORK LINK -->
     <div style="text-align:center; padding: 48px 0 32px;">
       <a href="/consulting.html" style="font-family:Helvetica,sans-serif; font-size:13px; color:#b7882c; text-decoration:none; letter-spacing:0.05em;">
-        Learn how the framework works ↗
+        Learn how the diagnostic works ↗
       </a>
     </div>
 
     <!-- FOOTER -->
-    <footer class="footer">
-      <div class="container footer-inner">
-        <div class="footer-left">
-          <div class="footer-name">Carlos Ureña</div>
-          <div class="footer-desc">Payments portfolio economics and commercialization</div>
-          <div class="footer-institutions">Citi · Deutsche Bank · HSBC · Mashreq</div>
-        </div>
-        <div class="footer-right">
-          <a href="https://www.linkedin.com/in/carlosurena/" target="_blank" rel="noopener" class="footer-link">
-            linkedin.com/in/carlosurena →
-          </a>
-          <div class="footer-micro">V1 · Commercial banking payments · No data stored</div>
-        </div>
-      </div>
+    <footer class="footer" style="padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-family:Georgia,serif;font-size:13px;color:rgba(255,255,255,0.7);">Making payments portfolio economics visible</span>
+      <span style="font-size:13px;color:rgba(255,255,255,0.5);">
+        <a href="https://www.linkedin.com/in/carlosurena/" target="_blank" rel="noopener" style="color:#b7882c;text-decoration:none;">LinkedIn</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:carlos@carlosurena.com" style="color:#b7882c;text-decoration:none;">Email</a>
+        &nbsp;·&nbsp; © 2026
+      </span>
     </footer>
 
   </main>
@@ -239,6 +236,14 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="model.js?v=6"></script>
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=24"></script>
+<style>
+    .hero-authority { font-family: Helvetica, sans-serif; font-size: 13px; color: #6b7280; margin: 0 0 16px; }
+    .hero-how { background: rgba(255,255,255,0.06); border: 1px solid rgba(183,136,44,0.3); border-left: 3px solid #b7882c; padding: 16px 18px; margin: 16px 0 20px; }
+    .how-label { font-family: Helvetica, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #b7882c; margin-bottom: 10px; }
+    .how-steps { display: flex; flex-direction: column; gap: 8px; }
+    .how-step { display: flex; align-items: flex-start; gap: 10px; font-family: Helvetica, sans-serif; font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+    .how-num { width: 20px; height: 20px; border-radius: 50%; background: #0f1f3d; color: #b7882c; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  </style>
 </body>
 </html>
