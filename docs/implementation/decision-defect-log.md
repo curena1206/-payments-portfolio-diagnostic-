@@ -58,3 +58,37 @@ or seven approved Dimension Scores.
 confirmed expected controls and mark its data as `awaiting-controlled-source`.
 Do not invent fixture responses. Import of the controlled artifact belongs before
 I3 golden-result tests.
+
+## I1-001 — Aggregate persistence and autosave boundary
+
+**Decision:** Persist each assessment as one versioned aggregate containing its
+lifecycle, optional recovery Contact association, and the canonical state of all
+49 responses. Application services depend only on an assessment repository
+interface; the in-memory adapter is a deterministic reference implementation,
+not a production database choice.
+
+**Rationale:** An aggregate write keeps each answer transition, factual progress,
+and completion eligibility atomic. Optimistic revisions reject stale writes, and
+command idempotency keys make retries return the original committed result
+without producing an additional write.
+
+## I1-002 — Canonical evidence states and completion
+
+**Decision:** A response is exactly one of `Unanswered`, `Scored response`, or
+`Confirmed N/A`. Scored responses retain the authoritative option ID, score, and
+internal Dual-path identity. Confirmed N/A is permitted only for G4, B2, and B3,
+requires non-empty structural-absence evidence, and never receives a numeric
+score. Both scored and confirmed-N/A states count factually toward completion;
+results become eligible only at 49/49.
+
+**Rationale:** This preserves the governed evidence semantics without introducing
+the I3 scoring engine or presentation behavior.
+
+## I1-003 — Recovery identity remains separate
+
+**Decision:** Optional recovery associates an assessment with the shared Contact
+model. Neither consent nor Discussion Request state is embedded in the assessment
+aggregate or created by recovery operations.
+
+**Rationale:** Recovery identity, commercial consent, and Discussion Requests
+have different scopes and remain separated for their authorized increments.

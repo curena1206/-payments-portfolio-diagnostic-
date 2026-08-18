@@ -9,12 +9,6 @@ export const contactSchema = z.object({
   createdAt: timestamp,
 });
 
-export const assessmentInstanceSchema = z.object({
-  id,
-  recoveryContactId: id.nullable(),
-  createdAt: timestamp,
-});
-
 export const commercialConsentSchema = z.object({
   id,
   contactId: id,
@@ -31,7 +25,6 @@ export const discussionRequestSchema = z.object({
 });
 
 export type Contact = z.infer<typeof contactSchema>;
-export type AssessmentInstance = z.infer<typeof assessmentInstanceSchema>;
 export type CommercialConsent = z.infer<typeof commercialConsentSchema>;
 export type DiscussionRequest = z.infer<typeof discussionRequestSchema>;
 
@@ -39,11 +32,6 @@ export interface IdentityRepository {
   getContact(contactId: string): Promise<Contact | null>;
   findContactByEmail(email: string): Promise<Contact | null>;
   saveContact(contact: Contact): Promise<void>;
-}
-
-export interface AssessmentRepository {
-  getAssessment(instanceId: string): Promise<AssessmentInstance | null>;
-  saveAssessment(instance: AssessmentInstance): Promise<void>;
 }
 
 export interface CommercialPermissionRepository {

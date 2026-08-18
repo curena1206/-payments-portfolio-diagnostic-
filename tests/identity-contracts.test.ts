@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
-  assessmentInstanceSchema,
   commercialConsentSchema,
   contactSchema,
   discussionRequestSchema,
 } from "../src/domain/identity/contracts";
+import { createAssessmentAggregate } from "../src/domain/assessment/aggregate";
 
 const contactId = "11111111-1111-4111-8111-111111111111";
 const firstAssessmentId = "22222222-2222-4222-8222-222222222222";
@@ -18,10 +18,10 @@ describe("shared identity contract", () => {
       email: "respondent@example.com",
       createdAt: recordedAt,
     });
-    const assessment = assessmentInstanceSchema.parse({
+    const assessment = createAssessmentAggregate({
       id: firstAssessmentId,
       recoveryContactId: contact.id,
-      createdAt: recordedAt,
+      now: recordedAt,
     });
 
     expect(assessment.recoveryContactId).toBe(contact.id);
@@ -49,10 +49,10 @@ describe("shared identity contract", () => {
       status: "submitted",
       submittedAt: recordedAt,
     });
-    const secondAssessment = assessmentInstanceSchema.parse({
+    const secondAssessment = createAssessmentAggregate({
       id: secondAssessmentId,
       recoveryContactId: contactId,
-      createdAt: recordedAt,
+      now: recordedAt,
     });
 
     expect(firstRequest.contactId).toBe(secondAssessment.recoveryContactId);
