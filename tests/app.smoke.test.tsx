@@ -32,4 +32,21 @@ describe("application shell", () => {
     );
     expect(screen.getByRole("main")).toBeVisible();
   });
+
+  it("builds application links beneath the Pages repository path", () => {
+    render(
+      <MemoryRouter
+        basename="/-payments-portfolio-diagnostic-/"
+        initialEntries={["/-payments-portfolio-diagnostic-/"]}
+      >
+        <App />
+      </MemoryRouter>,
+    );
+    expect(
+      screen.getByRole("link", { name: "Open assessment foundation" }),
+    ).toHaveAttribute(
+      "href",
+      "/-payments-portfolio-diagnostic-/assessment",
+    );
+  });
 });
