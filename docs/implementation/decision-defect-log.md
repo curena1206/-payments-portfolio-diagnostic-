@@ -77,9 +77,10 @@ without producing an additional write.
 **Decision:** A response is exactly one of `Unanswered`, `Scored response`, or
 `Confirmed N/A`. Scored responses retain the authoritative option ID, score, and
 internal Dual-path identity. Confirmed N/A is permitted only for G4, B2, and B3,
-requires non-empty structural-absence evidence, and never receives a numeric
-score. Both scored and confirmed-N/A states count factually toward completion;
-results become eligible only at 49/49.
+records an explicit affirmative confirmation and its timestamp without storing
+free-form rationale, and never receives a numeric score. Both scored and
+confirmed-N/A states count factually toward completion; results become eligible
+only at 49/49.
 
 **Rationale:** This preserves the governed evidence semantics without introducing
 the I3 scoring engine or presentation behavior.
@@ -92,3 +93,14 @@ aggregate or created by recovery operations.
 
 **Rationale:** Recovery identity, commercial consent, and Discussion Requests
 have different scopes and remain separated for their authorized increments.
+
+## I1-004 — Explicit questionnaire-version binding
+
+**Decision:** Authoritative question and option access occurs through a catalog
+with an explicit model identity. Before any response mutation, the application
+service verifies that the Assessment Instance model ID equals the active catalog
+model ID. The only supported catalog is `pfi-standard-v28`.
+
+**Rationale:** Stored option IDs must never be silently reinterpreted against a
+different questionnaire version. Unsupported or mismatched model identities fail
+explicitly; migration behavior is outside I1.

@@ -1,9 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { createAssessmentAggregate } from "../src/domain/assessment/aggregate";
-import {
-  listAuthoritativeOptions,
-  toScoredEvidence,
-} from "../src/domain/assessment/catalog";
+import { pfiV28Catalog } from "../src/domain/assessment/catalog";
 import {
   getAssessmentProgress,
   getDimensionProgress,
@@ -12,7 +9,10 @@ import {
   AssessmentConflictError,
   IdempotencyConflictError,
 } from "../src/domain/assessment/repository";
-import { AssessmentService } from "../src/domain/assessment/service";
+import {
+  AssessmentModelMismatchError,
+  AssessmentService,
+} from "../src/domain/assessment/service";
 import {
   contactSchema,
   type Contact,
@@ -62,6 +62,7 @@ describe("I1 assessment engine and persistence", () => {
     tick = 0;
     service = new AssessmentService({
       assessments,
+      catalog: pfiV28Catalog,
       identities,
       newId: () =>
         nextId++ === 1
@@ -75,6 +76,7 @@ describe("I1 assessment engine and persistence", () => {
     const assessment = await service.createAssessment({ idempotencyKey: "create-1" });
 
     expect(assessment.id).toBe(assessmentId1);
+    expect(assessment.modelId).toBe("pfi-standard-v28");
     expect(assessment.lifecycle).toBe("in-progress");
     expect(Object.keys(assessment.responses)).toHaveLength(49);
     expect(Object.values(assessment.responses).every((state) => state.kind === "unanswered")).toBe(true);
@@ -86,8 +88,8 @@ describe("I1 assessment engine and persistence", () => {
   });
 
   it("exposes the governed six-option and nine-option authoritative structures", () => {
-    const capabilityOnly = listAuthoritativeOptions("C1");
-    const dualPath = listAuthoritativeOptions("C2");
+    const capabilityOnly = pfiV28Catalog.listOptions("C1");
+    const dualPath = pfiV28Catalog.listOptions("C2");
 
     expect(capabilityOnly).toHaveLength(6);
     expect(capabilityOnly.every((option) => option.path === null)).toBe(true);
@@ -98,7 +100,7 @@ describe("I1 assessment engine and persistence", () => {
 
   it("accepts only an authoritative option belonging to the selected question", async () => {
     await service.createAssessment({ idempotencyKey: "create-1" });
-    const c2Option = listAuthoritativeOptions("C2")[0];
+    const c2Option = pfiV28Catalog.listOptions("C2")[0];
     expect(c2Option).toBeDefined();
 
     await expect(
@@ -111,9 +113,39 @@ describe("I1 assessment engine and persistence", () => {
     ).rejects.toThrow("is not authoritative for C1");
   });
 
+  it("rejects an unsupported recorded model before interpreting a response", async () => {
+    const unsupported = {
+      ...createAssessmentAggregate({
+        id: assessmentId1,
+        now: "2026-08-18T10:00:00+02:00",
+      }),
+      modelId: "pfi-standard-v29",
+    };
+    await assessments.save({
+      assessment: unsupported,
+      expectedRevision: null,
+      idempotencyKey: "unsupported-create",
+      commandFingerprint: "unsupported-create",
+    });
+    const writesBeforeAttempt = assessments.successfulWriteCount;
+
+    await expect(
+      service.recordScoredResponse({
+        assessmentId: assessmentId1,
+        questionId: "C1",
+        optionId: pfiV28Catalog.listOptions("C1")[0]!.id,
+        idempotencyKey: "unsupported-score",
+      }),
+    ).rejects.toBeInstanceOf(AssessmentModelMismatchError);
+    expect(assessments.successfulWriteCount).toBe(writesBeforeAttempt);
+    expect((await assessments.load(assessmentId1))?.responses.C1).toEqual({
+      kind: "unanswered",
+    });
+  });
+
   it("autosaves scored transitions and preserves internal Dual-path identity", async () => {
     await service.createAssessment({ idempotencyKey: "create-1" });
-    const option = listAuthoritativeOptions("C2").find(
+    const option = pfiV28Catalog.listOptions("C2").find(
       (candidate) => candidate.score === 4 && candidate.path === "intentional-choice",
     );
     expect(option).toBeDefined();
@@ -126,46 +158,41 @@ describe("I1 assessment engine and persistence", () => {
     });
     const reloaded = await assessments.load(assessmentId1);
 
-    expect(saved.responses.C2).toEqual(toScoredEvidence(option!));
+    expect(saved.responses.C2).toEqual(pfiV28Catalog.toScoredEvidence(option!));
     expect(reloaded).toEqual(saved);
     expect(saved.revision).toBe(1);
     expect(getAssessmentProgress(saved).complete).toBe(1);
   });
 
-  it("permits confirmed N/A only for G4, B2, and B3 with factual evidence", async () => {
+  it("permits explicit confirmed N/A only for G4, B2, and B3 without free-form prose", async () => {
     await service.createAssessment({ idempotencyKey: "create-1" });
 
     await expect(
       service.confirmNotApplicable({
         assessmentId: assessmentId1,
         questionId: "C1",
-        evidence: "Outside scope",
         idempotencyKey: "na-c1",
       }),
     ).rejects.toThrow("C1 is not N/A-eligible");
-    await expect(
-      service.confirmNotApplicable({
-        assessmentId: assessmentId1,
-        questionId: "G4",
-        evidence: "   ",
-        idempotencyKey: "na-g4-empty",
-      }),
-    ).rejects.toThrow("requires structural-absence evidence");
 
     for (const questionId of ["G4", "B2", "B3"] as const) {
       const saved = await service.confirmNotApplicable({
         assessmentId: assessmentId1,
         questionId,
-        evidence: `Structural absence evidence for ${questionId}`,
         idempotencyKey: `na-${questionId}`,
       });
-      expect(saved.responses[questionId]?.kind).toBe("confirmed-na");
+      const confirmed = saved.responses[questionId];
+      expect(confirmed?.kind).toBe("confirmed-na");
+      if (confirmed?.kind === "confirmed-na") {
+        expect(confirmed.confirmedAt).toBeTypeOf("string");
+        expect("evidence" in confirmed).toBe(false);
+      }
     }
   });
 
   it("supports Scored → N/A → Scored replacement without numeric N/A coercion", async () => {
     await service.createAssessment({ idempotencyKey: "create-1" });
-    const option = listAuthoritativeOptions("G4")[2];
+    const option = pfiV28Catalog.listOptions("G4")[2];
     expect(option).toBeDefined();
     await service.recordScoredResponse({
       assessmentId: assessmentId1,
@@ -176,7 +203,6 @@ describe("I1 assessment engine and persistence", () => {
     const notApplicable = await service.confirmNotApplicable({
       assessmentId: assessmentId1,
       questionId: "G4",
-      evidence: "All relevant activity operates in one integrated unit.",
       idempotencyKey: "g4-na",
     });
     expect(notApplicable.responses.G4).toMatchObject({ kind: "confirmed-na" });
@@ -188,7 +214,9 @@ describe("I1 assessment engine and persistence", () => {
       optionId: option!.id,
       idempotencyKey: "g4-score-2",
     });
-    expect(scoredAgain.responses.G4).toEqual(toScoredEvidence(option!));
+    expect(scoredAgain.responses.G4).toEqual(
+      pfiV28Catalog.toScoredEvidence(option!),
+    );
   });
 
   it("treats cancellation as transient UI activity and performs no write", async () => {
@@ -202,7 +230,7 @@ describe("I1 assessment engine and persistence", () => {
 
   it("counts Scored and confirmed N/A factually while excluding Unanswered", async () => {
     await service.createAssessment({ idempotencyKey: "create-1" });
-    const c1 = listAuthoritativeOptions("C1")[0]!;
+    const c1 = pfiV28Catalog.listOptions("C1")[0]!;
     await service.recordScoredResponse({
       assessmentId: assessmentId1,
       questionId: "C1",
@@ -212,7 +240,6 @@ describe("I1 assessment engine and persistence", () => {
     const assessment = await service.confirmNotApplicable({
       assessmentId: assessmentId1,
       questionId: "B2",
-      evidence: "The product architecture structurally cannot influence balances.",
       idempotencyKey: "na-b2",
     });
 
@@ -239,14 +266,13 @@ describe("I1 assessment engine and persistence", () => {
         assessment = await service.confirmNotApplicable({
           assessmentId: assessmentId1,
           questionId: question.id,
-          evidence: `Approved structural-absence evidence for ${question.id}`,
           idempotencyKey: `na-complete-${question.id}`,
         });
       } else {
         assessment = await service.recordScoredResponse({
           assessmentId: assessmentId1,
           questionId: question.id,
-          optionId: listAuthoritativeOptions(question.id)[0]!.id,
+          optionId: pfiV28Catalog.listOptions(question.id)[0]!.id,
           idempotencyKey: `score-complete-${question.id}`,
         });
       }
@@ -264,7 +290,7 @@ describe("I1 assessment engine and persistence", () => {
     let assessment = await service.createAssessment({ idempotencyKey: "create-1" });
     for (const [index, question] of pfiQuestions.entries()) {
       if (index === 48) break;
-      const option = listAuthoritativeOptions(question.id)[0]!;
+      const option = pfiV28Catalog.listOptions(question.id)[0]!;
       assessment = await service.recordScoredResponse({
         assessmentId: assessmentId1,
         questionId: question.id,
@@ -280,7 +306,7 @@ describe("I1 assessment engine and persistence", () => {
     expect(assessment.lifecycle).toBe("in-progress");
 
     const finalQuestion = pfiQuestions[48]!;
-    const finalOption = listAuthoritativeOptions(finalQuestion.id)[0]!;
+    const finalOption = pfiV28Catalog.listOptions(finalQuestion.id)[0]!;
     assessment = await service.recordScoredResponse({
       assessmentId: assessmentId1,
       questionId: finalQuestion.id,
@@ -298,7 +324,7 @@ describe("I1 assessment engine and persistence", () => {
 
   it("makes repeated autosave commands idempotent", async () => {
     await service.createAssessment({ idempotencyKey: "create-1" });
-    const option = listAuthoritativeOptions("C1")[3]!;
+    const option = pfiV28Catalog.listOptions("C1")[3]!;
     const command = {
       assessmentId: assessmentId1,
       questionId: "C1",
@@ -325,8 +351,8 @@ describe("I1 assessment engine and persistence", () => {
 
   it("rejects reuse of an idempotency key for a different command", async () => {
     await service.createAssessment({ idempotencyKey: "create-1" });
-    const first = listAuthoritativeOptions("C1")[0]!;
-    const second = listAuthoritativeOptions("C1")[1]!;
+    const first = pfiV28Catalog.listOptions("C1")[0]!;
+    const second = pfiV28Catalog.listOptions("C1")[1]!;
     await service.recordScoredResponse({
       assessmentId: assessmentId1,
       questionId: "C1",
@@ -351,11 +377,14 @@ describe("I1 assessment engine and persistence", () => {
       idempotencyKey: "create-direct",
       commandFingerprint: "create-direct",
     });
-    const option = listAuthoritativeOptions("C1")[0]!;
+    const option = pfiV28Catalog.listOptions("C1")[0]!;
     const firstUpdate = {
       ...original,
       revision: 1,
-      responses: { ...original.responses, C1: toScoredEvidence(option) },
+      responses: {
+        ...original.responses,
+        C1: pfiV28Catalog.toScoredEvidence(option),
+      },
     };
     await assessments.save({
       assessment: firstUpdate,
@@ -375,7 +404,7 @@ describe("I1 assessment engine and persistence", () => {
 
   it("reloads and resumes committed state through a new service instance", async () => {
     await service.createAssessment({ idempotencyKey: "create-1" });
-    const option = listAuthoritativeOptions("R4").find(
+    const option = pfiV28Catalog.listOptions("R4").find(
       (candidate) => candidate.path === "capability",
     )!;
     const saved = await service.recordScoredResponse({
@@ -386,6 +415,7 @@ describe("I1 assessment engine and persistence", () => {
     });
     const reloadedService = new AssessmentService({
       assessments,
+      catalog: pfiV28Catalog,
       identities,
       newId: () => assessmentId2,
       now: () => "2026-08-18T12:00:00+02:00",
@@ -397,7 +427,7 @@ describe("I1 assessment engine and persistence", () => {
   it("isolates responses across multiple assessment instances", async () => {
     await service.createAssessment({ idempotencyKey: "create-1" });
     await service.createAssessment({ idempotencyKey: "create-2" });
-    const option = listAuthoritativeOptions("C1")[0]!;
+    const option = pfiV28Catalog.listOptions("C1")[0]!;
     await service.recordScoredResponse({
       assessmentId: assessmentId1,
       questionId: "C1",
@@ -477,7 +507,7 @@ describe("I1 assessment engine and persistence", () => {
       service.recordScoredResponse({
         assessmentId: assessmentId1,
         questionId: "C1",
-        optionId: listAuthoritativeOptions("C1")[0]!.id,
+        optionId: pfiV28Catalog.listOptions("C1")[0]!.id,
         idempotencyKey: "write-after-supersede",
       }),
     ).rejects.toThrow("cannot be changed");

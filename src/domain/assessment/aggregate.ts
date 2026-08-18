@@ -10,7 +10,7 @@ export const assessmentLifecycleSchema = z.enum([
 
 export const assessmentAggregateSchema = z.object({
   id: z.string().uuid(),
-  modelId: z.literal("pfi-standard-v28"),
+  modelId: z.string().min(1),
   recoveryContactId: z.string().uuid().nullable(),
   lifecycle: assessmentLifecycleSchema,
   responses: z.record(z.string(), evidenceStateSchema),

@@ -4,11 +4,7 @@ import {
   createAssessmentAggregate,
   type AssessmentAggregate,
 } from "./aggregate";
-import {
-  getAuthoritativeOption,
-  getAuthoritativeQuestion,
-  toScoredEvidence,
-} from "./catalog";
+import type { AssessmentCatalog } from "./catalog";
 import { getAssessmentProgress } from "./progress";
 import {
   AssessmentNotFoundError,
@@ -17,6 +13,7 @@ import {
 
 export interface AssessmentServiceDependencies {
   assessments: AssessmentRepository;
+  catalog: AssessmentCatalog;
   identities: IdentityRepository;
   now: () => string;
   newId: () => string;
@@ -42,6 +39,7 @@ export class AssessmentService {
       now: this.dependencies.now(),
       recoveryContactId: input.recoveryContactId ?? null,
     });
+    this.assertModelBinding(assessment);
     return this.dependencies.assessments.save({
       assessment,
       expectedRevision: null,
@@ -59,7 +57,6 @@ export class AssessmentService {
       optionId: string;
     },
   ): Promise<AssessmentAggregate> {
-    const option = getAuthoritativeOption(input.questionId, input.optionId);
     return this.update(
       input.assessmentId,
       input.idempotencyKey,
@@ -68,13 +65,19 @@ export class AssessmentService {
         questionId: input.questionId,
         optionId: input.optionId,
       }),
-      (assessment) => ({
-        ...assessment,
-        responses: {
-          ...assessment.responses,
-          [input.questionId]: toScoredEvidence(option),
-        },
-      }),
+      (assessment) => {
+        const option = this.dependencies.catalog.getOption(
+          input.questionId,
+          input.optionId,
+        );
+        return {
+          ...assessment,
+          responses: {
+            ...assessment.responses,
+            [input.questionId]: this.dependencies.catalog.toScoredEvidence(option),
+          },
+        };
+      },
     );
   }
 
@@ -82,15 +85,8 @@ export class AssessmentService {
     input: CommandIdentity & {
       assessmentId: string;
       questionId: string;
-      evidence: string;
     },
   ): Promise<AssessmentAggregate> {
-    const question = getAuthoritativeQuestion(input.questionId);
-    if (!question.naEligible) {
-      throw new Error(`${input.questionId} is not N/A-eligible`);
-    }
-    const evidence = input.evidence.trim();
-    if (!evidence) throw new Error("Confirmed N/A requires structural-absence evidence");
     const confirmedAt = this.dependencies.now();
     return this.update(
       input.assessmentId,
@@ -98,15 +94,20 @@ export class AssessmentService {
       fingerprint("confirm-na", {
         assessmentId: input.assessmentId,
         questionId: input.questionId,
-        evidence,
       }),
-      (assessment) => ({
-        ...assessment,
-        responses: {
-          ...assessment.responses,
-          [input.questionId]: { kind: "confirmed-na", evidence, confirmedAt },
-        },
-      }),
+      (assessment) => {
+        const question = this.dependencies.catalog.getQuestion(input.questionId);
+        if (!question.naEligible) {
+          throw new Error(`${input.questionId} is not N/A-eligible`);
+        }
+        return {
+          ...assessment,
+          responses: {
+            ...assessment.responses,
+            [input.questionId]: { kind: "confirmed-na", confirmedAt },
+          },
+        };
+      },
     );
   }
 
@@ -140,6 +141,7 @@ export class AssessmentService {
   async resumeAssessment(assessmentId: string): Promise<AssessmentAggregate> {
     const assessment = await this.dependencies.assessments.load(assessmentId);
     if (!assessment) throw new AssessmentNotFoundError(assessmentId);
+    this.assertModelBinding(assessment);
     assertCanonicalResponseSet(assessment.responses);
     return assessment;
   }
@@ -182,5 +184,24 @@ export class AssessmentService {
     if (!(await this.dependencies.identities.getContact(contactId))) {
       throw new Error(`Unknown recovery Contact: ${contactId}`);
     }
+  }
+
+  private assertModelBinding(assessment: AssessmentAggregate): void {
+    if (assessment.modelId !== this.dependencies.catalog.modelId) {
+      throw new AssessmentModelMismatchError(
+        assessment.id,
+        assessment.modelId,
+        this.dependencies.catalog.modelId,
+      );
+    }
+  }
+}
+
+export class AssessmentModelMismatchError extends Error {
+  constructor(assessmentId: string, recordedModelId: string, catalogModelId: string) {
+    super(
+      `Assessment ${assessmentId} records unsupported model ${recordedModelId}; ` +
+        `active catalog is ${catalogModelId}`,
+    );
   }
 }

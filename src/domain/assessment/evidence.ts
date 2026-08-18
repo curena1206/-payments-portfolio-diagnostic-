@@ -14,7 +14,6 @@ export const scoredEvidenceSchema = z.object({
 
 export const confirmedNaEvidenceSchema = z.object({
   kind: z.literal("confirmed-na"),
-  evidence: z.string().trim().min(1),
   confirmedAt: z.string().datetime({ offset: true }),
 });
 
