@@ -140,3 +140,37 @@ and return focus; operational messages use live-region semantics.
 **Rationale:** This implements the Gate 4B/4E interaction architecture without
 compressing evidence, exposing scoring metadata, or deferring obvious
 assessment-side accessibility foundations.
+
+## I2-004 — Respondent dimension presentation order
+
+**Decision:** Encode the respondent-facing dimension order as an explicit
+presentation contract, independent of model storage and Standard PFI weight:
+Client Value & Commercial Relevance; Governance & Operating Model; Revenue
+Architecture; Balance Sheet & Liquidity Contribution; Multi-Rail Strategy &
+Future Readiness; Margin & Cost Structure; Growth Engine Quality. Both the
+dimension navigator and first-incomplete resume routing consume this contract.
+
+**Governing source:** Gate 4B Assessment Experience Prototype v0.3, slide 4,
+explicitly numbers this sequence 01–07; Gate 4E Production Design Specification
+& Handoff v0.1.1, Journey/Route Matrix assessment row, requires seven dimensions
+in locked order. The Assessment Experience & Output Working Record v1.11 locks
+Gate 4B v0.3 and Gate 4E v0.1.1 as the implementation authorities. The earlier
+alternative in Strategy Review Working Record v28 section 19 is labeled
+“Working Direction” and is therefore supporting history, not the final Gate 4
+presentation decision.
+
+**Rationale:** The final locked sequence currently happens to match the v28
+model array, which is arranged by Standard PFI weight. An explicit contract
+prevents a future methodology/catalog reordering from silently changing the
+respondent journey or resume destination.
+
+## I2-005 — Narrow-mobile dual-path orientation cue
+
+**Decision:** At widths up to 35rem, show a quiet, non-evaluative “Option n of
+9” cue above each Dual-path anchor. The cue is presentation-only and excluded
+from the radio's accessible name; the radio sequence and all locked anchor text
+remain unchanged.
+
+**Rationale:** This improves orientation within long M4-class flat lists without
+introducing score/path metadata, sticky obstruction, pagination, truncation, or
+hidden response logic.

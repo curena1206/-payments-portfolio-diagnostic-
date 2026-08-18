@@ -22,6 +22,7 @@ import {
   type IdentityRepository,
 } from "../src/domain/identity/contracts";
 import { pfiQuestions } from "../src/domain/pfi/model";
+import { respondentDimensions } from "../src/domain/pfi/presentationOrder";
 import { InMemoryAssessmentRepository } from "../src/infrastructure/persistence/InMemoryAssessmentRepository";
 
 class MemoryIdentityRepository implements IdentityRepository {
@@ -150,11 +151,46 @@ describe("I2 assessment experience", () => {
     expect(await screen.findByRole("heading", { level: 1, name: "Assessment" })).toBeVisible();
     expect(document.querySelectorAll(".dimension-toggle")).toHaveLength(7);
     expect(screen.getByText("0 of 49 complete", { selector: "strong" })).toBeVisible();
+    expect(screen.queryByText("Assessment experience", { exact: false })).toBeNull();
+  });
+
+  it("renders the exact locked respondent-facing dimension order", async () => {
+    const runtime = createTestRuntime();
+    renderApp(runtime);
+    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
+
+    await screen.findByRole("heading", { level: 1, name: "Assessment" });
+    expect(
+      [...document.querySelectorAll(".dimension-name")].map((node) => node.textContent),
+    ).toEqual([
+      "Client Value & Commercial Relevance",
+      "Governance & Operating Model",
+      "Revenue Architecture",
+      "Balance Sheet & Liquidity Contribution",
+      "Multi-Rail Strategy & Future Readiness",
+      "Margin & Cost Structure",
+      "Growth Engine Quality",
+    ]);
   });
 
   it("resumes the same assessment at the first incomplete dimension", async () => {
     const runtime = createTestRuntime();
-    const assessment = await seedAssessment(runtime, 7);
+    const firstRespondentDimension = respondentDimensions[0]!;
+    expect(firstRespondentDimension.id).toBe("client-value");
+    const base = createAssessmentAggregate({ id: runtime.newId(), now: runtime.now() });
+    const responses = { ...base.responses };
+    for (const question of firstRespondentDimension.questions) {
+      responses[question.id] = pfiV28Catalog.toScoredEvidence(
+        pfiV28Catalog.listOptions(question.id)[0]!,
+      );
+    }
+    const assessment = await runtime.assessments.save({
+      assessment: { ...base, responses },
+      expectedRevision: null,
+      idempotencyKey: runtime.newId(),
+      commandFingerprint: "seed-first-respondent-dimension",
+    });
+    runtime.continuity.setCurrentAssessmentId(assessment.id);
     renderApp(runtime);
 
     fireEvent.click(await screen.findByRole("button", { name: "Continue assessment" }));
@@ -197,6 +233,23 @@ describe("I2 assessment experience", () => {
     for (const option of pfiV28Catalog.listOptions("M4")) {
       expect(within(m4Card).getByText(option.text)).toBeVisible();
     }
+    expect(
+      [...m4Card.querySelectorAll(".response-option-position")].map(
+        (node) => node.textContent?.trim(),
+      ),
+    ).toEqual([
+      "Option 1 of 9",
+      "Option 2 of 9",
+      "Option 3 of 9",
+      "Option 4 of 9",
+      "Option 5 of 9",
+      "Option 6 of 9",
+      "Option 7 of 9",
+      "Option 8 of 9",
+      "Option 9 of 9",
+    ]);
+    expect(m4Card.querySelectorAll(".response-option-position[aria-hidden=\"true\"]"))
+      .toHaveLength(9);
     expect(within(m4Card).queryByText(/Capability Path|Intentional-Choice Path/)).toBeNull();
   });
 

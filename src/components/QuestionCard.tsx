@@ -62,7 +62,7 @@ export function QuestionCard({
       </header>
       <fieldset className="response-group">
         <legend className="visually-hidden">Response for {question.id}</legend>
-        {options.map((option) => (
+        {options.map((option, optionIndex) => (
           <label className="response-option" key={option.id}>
             <input
               checked={response?.kind === "scored" && response.optionId === option.id}
@@ -71,7 +71,14 @@ export function QuestionCard({
               type="radio"
               value={option.id}
             />
-            <span>{option.text}</span>
+            <span className="response-option-copy">
+              {question.pathType === "dual-path" ? (
+                <span aria-hidden="true" className="response-option-position">
+                  Option {optionIndex + 1} of {options.length}
+                </span>
+              ) : null}
+              <span>{option.text}</span>
+            </span>
           </label>
         ))}
       </fieldset>

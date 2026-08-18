@@ -8,12 +8,16 @@ import {
   getAssessmentProgress,
   getDimensionProgress,
 } from "../domain/assessment/progress";
-import { pfiModel } from "../domain/pfi/model";
+import { respondentDimensions } from "../domain/pfi/presentationOrder";
 
 function firstIncompleteDimension(assessment: NonNullable<ReturnType<typeof useAssessmentExperience>["active"]>) {
   const progress = getDimensionProgress(assessment);
-  return progress.find((dimension) => dimension.complete < dimension.total)?.dimensionId ??
-    pfiModel.dimensions[0]!.id;
+  const progressByDimension = new Map(
+    progress.map((dimension) => [dimension.dimensionId, dimension]),
+  );
+  return respondentDimensions.find(
+    (dimension) => progressByDimension.get(dimension.id)?.complete !== 7,
+  )?.id ?? respondentDimensions[0]!.id;
 }
 
 export function AssessmentPage() {
@@ -65,7 +69,7 @@ export function AssessmentPage() {
       </header>
 
       <div className="dimension-accordion">
-        {pfiModel.dimensions.map((dimension, dimensionIndex) => {
+        {respondentDimensions.map((dimension, dimensionIndex) => {
           const expanded = effectiveOpenDimension === dimension.id;
           const progress = dimensionProgress.find((item) => item.dimensionId === dimension.id)!;
           const panelId = `dimension-panel-${dimension.id}`;
