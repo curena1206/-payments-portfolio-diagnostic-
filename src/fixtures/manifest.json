@@ -3,13 +3,13 @@
   "fixtures": [
     {
       "id": "MP-01",
-      "authority": "PFI Gate 3E-3 Mixed-Profile MP-01 v0.3.3",
-      "status": "partial-controlled-source",
+      "authority": "PFI MP-01 Controlled Implementation Golden Fixture v1.0.1",
+      "status": "approved",
       "expected": {
         "standardComposite": 74.2,
         "qualifyingSignalCount": 8
       },
-      "dataFile": "mp-01.dimension-controls.json"
+      "dataFile": "mp-01.golden.json"
     }
   ]
 }

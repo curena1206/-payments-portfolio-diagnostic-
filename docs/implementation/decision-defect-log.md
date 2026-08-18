@@ -214,3 +214,21 @@ golden data and validate all seven Dimension Scores plus the composite exactly.
 Keep full MP-01 option-level Signal/Intentional-Choice reproduction blocked on
 the missing controlled ledger. Do not reverse-engineer or synthesize it from the
 expected outputs.
+
+## I3-004 — MP-01 controlled implementation fixture dependency closed
+
+**Decision:** Adopt independently reviewed MP-01 Controlled Implementation
+Golden Fixture v1.0.1 as the authoritative implementation ledger. Store its 49
+canonical fixture keys and expected controls as test data. Resolve every key to
+exactly one option through the existing `pfi-standard-v28` catalog, then commit
+the selections through the reviewed I1 `AssessmentService` before invoking I3.
+
+**Verification:** The end-to-end golden test reproduces all seven Dimension
+Scores, the 74.2 Standard Composite, eight Signals, three Formal Strengths,
+three dimension-level Examination Agenda areas, one ordinary scored dimension,
+the M4 Level-3 Intentional-Choice register, and the governed convergence Pattern.
+No production result-generation branch contains MP-01 expected outputs.
+
+**Disposition:** I3-003's missing-ledger dependency is closed. No I3 calculation,
+qualification, Signal, Agenda, Intentional-Choice, or Pattern implementation
+defect was exposed by the approved fixture.

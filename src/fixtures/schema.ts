@@ -22,38 +22,36 @@ export const fixtureManifestSchema = z.object({
 
 export type FixtureManifest = z.infer<typeof fixtureManifestSchema>;
 
-const sevenScoresSchema = z.tuple([
-  z.number().int().min(0).max(5),
-  z.number().int().min(0).max(5),
-  z.number().int().min(0).max(5),
-  z.number().int().min(0).max(5),
-  z.number().int().min(0).max(5),
-  z.number().int().min(0).max(5),
-  z.number().int().min(0).max(5),
-]);
-
-export const mp01DimensionControlsSchema = z.object({
+export const mp01GoldenFixtureSchema = z.object({
   id: z.literal("MP-01"),
-  authority: z.literal("PFI Gate 3E-3 Mixed-Profile MP-01 v0.3.3"),
-  scope: z.string().min(1),
-  dimensionRawScores: z.record(z.string(), sevenScoresSchema),
-  expectedDimensionDisplayScores: z.record(z.string(), z.number()),
-  expectedStandardCompositeDisplayScore: z.literal(74.2),
-  expectedQualifyingSignalCount: z.literal(8),
-  namedSignalOutcomes: z.array(
-    z.object({
-      dimensionId: z.string(),
-      constructLabel: z.string(),
-      category: z.enum(["sri", "universal-low-score"]),
-    }),
-  ).length(8),
-  intentionalChoiceControl: z.object({
-    dimensionId: z.literal("multi-rail"),
-    score: z.literal(3),
-    path: z.literal("intentional-choice"),
-    questionId: z.null(),
+  authority: z.literal("PFI MP-01 Controlled Implementation Golden Fixture v1.0.1"),
+  modelId: z.literal("pfi-standard-v28"),
+  responseKeys: z.array(z.string().min(1)).length(49).superRefine((keys, context) => {
+    if (new Set(keys).size !== keys.length) {
+      context.addIssue({ code: "custom", message: "MP-01 response keys must be unique" });
+    }
   }),
-  unresolvedFixtureDependency: z.string().min(1),
+  expected: z.object({
+    dimensionDisplayScores: z.record(z.string(), z.number()),
+    standardCompositeDisplayScore: z.literal(74.2),
+    signalQuestionIds: z.array(z.string()).length(8),
+    formalStrengthDimensionIds: z.array(z.string()).length(3),
+    dimensionAgendaDimensionIds: z.array(z.string()).length(3),
+    ordinaryScoredDimensionIds: z.array(z.string()).length(1),
+    intentionalChoice: z.object({
+      dimensionId: z.literal("multi-rail"),
+      questionId: z.literal("M4"),
+      score: z.literal(3),
+      path: z.literal("intentional-choice"),
+      reviewFrame: z.literal("reassess-supporting-considerations"),
+    }),
+    pattern: z.object({
+      kind: z.literal("strength-signal-convergence"),
+      strengthDimensionIds: z.array(z.string()),
+      signalDimensionIds: z.array(z.string()),
+      agendaDimensionIds: z.array(z.string()),
+    }),
+  }),
 });
 
-export type Mp01DimensionControls = z.infer<typeof mp01DimensionControlsSchema>;
+export type Mp01GoldenFixture = z.infer<typeof mp01GoldenFixtureSchema>;

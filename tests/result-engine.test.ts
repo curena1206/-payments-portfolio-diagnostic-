@@ -10,7 +10,6 @@ import {
   roundForDisplay,
 } from "../src/domain/results/scoring";
 import type { DimensionResult } from "../src/domain/results/types";
-import mp01 from "../src/fixtures/mp-01.dimension-controls.json";
 
 type ScoreOverride =
   | number
@@ -89,25 +88,6 @@ function dimensionResult(
 }
 
 describe("I3 scoring and result generation", () => {
-  it("reproduces every authoritative MP-01 dimension control and the 74.2 composite", () => {
-    const dimensions = pfiModel.dimensions.map((dimension) => {
-      const scores = mp01.dimensionRawScores[
-        dimension.id as keyof typeof mp01.dimensionRawScores
-      ];
-      const calculated = calculateDimensionScore(scores)!;
-      expect(calculated.displayScore).toBe(
-        mp01.expectedDimensionDisplayScores[
-          dimension.id as keyof typeof mp01.expectedDimensionDisplayScores
-        ],
-      );
-      return dimensionResult(dimension.id, calculated.score);
-    });
-
-    const composite = calculateComposite(dimensions);
-    expect(composite.state).toBe("standard");
-    expect(composite.displayScore).toBe(mp01.expectedStandardCompositeDisplayScore);
-  });
-
   it("uses equal applicable-question weighting, removes N/A, and enforces the four-question floor", () => {
     expect(calculateDimensionScore([5, 4, 3, 2, null, null, null])).toEqual({
       rawAverage: 3.5,

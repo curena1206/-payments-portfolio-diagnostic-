@@ -1,0 +1,43 @@
+{
+  "id": "MP-01",
+  "authority": "PFI MP-01 Controlled Implementation Golden Fixture v1.0.1",
+  "modelId": "pfi-standard-v28",
+  "responseKeys": [
+    "C1-L5", "C2-CAP-L5", "C3-CAP-L5", "C4-L5", "C5-L5", "C6-L4", "C7-CAP-L4",
+    "G1-L5", "G2-L5", "G3-L5", "G4-L5", "G5-L4", "G6-L4", "G7-L4",
+    "R1-L5", "R2-L5", "R3-L5", "R4-CAP-L4", "R5-L4", "R6-CAP-L4", "R7-L4",
+    "M1-L0", "M2-L1", "M3-L2", "M4-IC-L3", "M5-L2", "M6-L2", "M7-L2",
+    "B1-L1", "B2-L0", "B3-L2", "B4-L2", "B5-L2", "B6-L1", "B7-L3",
+    "MC1-L0", "MC2-L0", "MC3-L2", "MC4-L2", "MC5-L2", "MC6-L3", "MC7-L1",
+    "GE1-L3", "GE2-L3", "GE3-L3", "GE4-L3", "GE5-L3", "GE6-L3", "GE7-L2"
+  ],
+  "expected": {
+    "dimensionDisplayScores": {
+      "client-value": 94.3,
+      "governance": 91.4,
+      "revenue": 88.6,
+      "multi-rail": 34.3,
+      "balance-sheet": 31.4,
+      "margin-cost": 28.6,
+      "growth-engine": 57.1
+    },
+    "standardCompositeDisplayScore": 74.2,
+    "signalQuestionIds": ["M1", "M2", "B1", "B2", "B6", "MC1", "MC2", "MC7"],
+    "formalStrengthDimensionIds": ["client-value", "governance", "revenue"],
+    "dimensionAgendaDimensionIds": ["multi-rail", "balance-sheet", "margin-cost"],
+    "ordinaryScoredDimensionIds": ["growth-engine"],
+    "intentionalChoice": {
+      "dimensionId": "multi-rail",
+      "questionId": "M4",
+      "score": 3,
+      "path": "intentional-choice",
+      "reviewFrame": "reassess-supporting-considerations"
+    },
+    "pattern": {
+      "kind": "strength-signal-convergence",
+      "strengthDimensionIds": ["client-value", "governance", "revenue"],
+      "signalDimensionIds": ["multi-rail", "balance-sheet", "margin-cost"],
+      "agendaDimensionIds": ["multi-rail", "balance-sheet", "margin-cost"]
+    }
+  }
+}

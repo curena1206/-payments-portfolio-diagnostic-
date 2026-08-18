@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   loadFixtureManifest,
-  loadMp01DimensionControls,
+  loadMp01GoldenFixture,
 } from "../src/fixtures/load";
 
 describe("fixture foundation", () => {
@@ -9,16 +9,18 @@ describe("fixture foundation", () => {
     const manifest = loadFixtureManifest();
     expect(manifest.fixtures).toContainEqual({
       id: "MP-01",
-      authority: "PFI Gate 3E-3 Mixed-Profile MP-01 v0.3.3",
-      status: "partial-controlled-source",
+      authority: "PFI MP-01 Controlled Implementation Golden Fixture v1.0.1",
+      status: "approved",
       expected: { standardComposite: 74.2, qualifyingSignalCount: 8 },
-      dataFile: "mp-01.dimension-controls.json",
+      dataFile: "mp-01.golden.json",
     });
   });
 
-  it("loads only the authoritative MP-01 dimension controls without inventing option IDs", () => {
-    const fixture = loadMp01DimensionControls();
-    expect(fixture.expectedDimensionDisplayScores).toEqual({
+  it("loads the approved 49-response MP-01 golden fixture", () => {
+    const fixture = loadMp01GoldenFixture();
+    expect(fixture.responseKeys).toHaveLength(49);
+    expect(new Set(fixture.responseKeys).size).toBe(49);
+    expect(fixture.expected.dimensionDisplayScores).toEqual({
       "client-value": 94.3,
       governance: 91.4,
       revenue: 88.6,
@@ -27,12 +29,13 @@ describe("fixture foundation", () => {
       "margin-cost": 28.6,
       "growth-engine": 57.1,
     });
-    expect(fixture.namedSignalOutcomes).toHaveLength(8);
-    expect(fixture.intentionalChoiceControl).toEqual({
+    expect(fixture.expected.signalQuestionIds).toHaveLength(8);
+    expect(fixture.expected.intentionalChoice).toEqual({
       dimensionId: "multi-rail",
+      questionId: "M4",
       score: 3,
       path: "intentional-choice",
-      questionId: null,
+      reviewFrame: "reassess-supporting-considerations",
     });
   });
 });
