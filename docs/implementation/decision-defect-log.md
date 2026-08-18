@@ -232,3 +232,45 @@ No production result-generation branch contains MP-01 expected outputs.
 **Disposition:** I3-003's missing-ledger dependency is closed. No I3 calculation,
 qualification, Signal, Agenda, Intentional-Choice, or Pattern implementation
 defect was exposed by the approved fixture.
+
+## I4-001 — Results rendering consumes reviewed I3 facts
+
+**Decision:** Render the six-layer Results experience from the reviewed
+`GeneratedAssessmentResult` contract. Presentation resolves governed names,
+construct descriptions, selected anchors, and Standard weights through the
+authoritative v28 catalog/model; it does not recalculate scores, qualification,
+Signals, Pattern, Strength, Agenda, or Intentional-Choice eligibility.
+
+**Rationale:** Working Record v1.11 and Gate 4E require presentation to preserve
+the I3 evidence boundary. Keeping content resolution separate from the result
+engine prevents UI components from becoming a second scoring implementation.
+
+## I4-002 — Gate 4C density and sequence treatment
+
+**Decision:** Keep the substantive order Result → Profile → Signals → Pattern →
+Examination Agenda → Next Step. Within the MP-01 result, Profile uses the locked
+Gate 4C score-descending evidence-shape treatment; Signal groups, Pattern named
+dimensions, and Agenda entries follow that visible Profile order for consistent
+orientation. Signals use native disclosure controls, while Pattern remains a
+flat editorial passage and Agenda uses the three semantic jobs in reading order.
+
+**Rationale:** Gate 4C v0.2 supplies the final visual hierarchy and canonical
+MP-01 treatment. This ordering changes presentation only and does not alter v28
+weights, I3 arrays, qualification, or result facts.
+
+## I4-003 — I4 Next Step boundary excludes commercial behavior
+
+**Decision:** End I4 with the invariant governing principle and no action,
+identity, consent, Discussion Request, or commercial component.
+
+**Rationale:** The authorized I4 work order allows the substantive Next Step
+boundary but reserves all optional engagement state and behavior for I5.
+
+## I4-004 — Responsive visual verification
+
+**Verification:** MP-01 was rendered through the application at 320, 375, 768,
+and 1280 CSS pixels. At every width, document scroll width equaled client width;
+all seven Profile rows, eight Signals, three Agenda entries, and six navigation
+links remained present. Desktop evidence covers Result, Profile, Signals,
+Pattern, and Agenda; mobile and empty operational-state evidence are retained in
+`docs/implementation/evidence/i4/`.
