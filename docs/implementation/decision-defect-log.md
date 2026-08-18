@@ -248,15 +248,16 @@ engine prevents UI components from becoming a second scoring implementation.
 ## I4-002 — Gate 4C density and sequence treatment
 
 **Decision:** Keep the substantive order Result → Profile → Signals → Pattern →
-Examination Agenda → Next Step. Within the MP-01 result, Profile uses the locked
-Gate 4C score-descending evidence-shape treatment; Signal groups, Pattern named
-dimensions, and Agenda entries follow that visible Profile order for consistent
-orientation. Signals use native disclosure controls, while Pattern remains a
-flat editorial passage and Agenda uses the three semantic jobs in reading order.
+Examination Agenda → Next Step. Profile rows, Signal groups, Pattern named
+dimensions, and Agenda entries all consume the single respondent-facing
+dimension order in `presentationOrder.ts`. Signals use native disclosure
+controls, while Pattern remains a flat editorial passage and Agenda uses the
+three semantic jobs in reading order.
 
-**Rationale:** Gate 4C v0.2 supplies the final visual hierarchy and canonical
-MP-01 treatment. This ordering changes presentation only and does not alter v28
-weights, I3 arrays, qualification, or result facts.
+**Rationale:** Gate 4C v0.2 supplies the final visual hierarchy, and the reviewed
+I2 presentation contract prevents score or methodology order from becoming an
+unintended structural ranking. This ordering changes presentation only and does
+not alter v28 weights, I3 arrays, qualification, or result facts.
 
 ## I4-003 — I4 Next Step boundary excludes commercial behavior
 

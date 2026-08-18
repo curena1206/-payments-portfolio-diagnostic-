@@ -1,4 +1,5 @@
 import { pfiModel } from "../domain/pfi/model";
+import { respondentDimensionIds } from "../domain/pfi/presentationOrder";
 import type {
   CompositeResult,
   GeneratedAssessmentResult,
@@ -129,12 +130,13 @@ function ProfileRow({ entry }: { entry: ProfileEntry }) {
 }
 
 export function ResultsExperience({ result }: { result: GeneratedAssessmentResult }) {
-  const profile = [...result.profile].sort((left, right) => {
-    const leftScore = left.dimension.score ?? -1;
-    const rightScore = right.dimension.score ?? -1;
-    return rightScore - leftScore;
+  const profile = respondentDimensionIds.map((dimensionId) => {
+    const entry = result.profile.find(
+      (candidate) => candidate.dimension.dimensionId === dimensionId,
+    );
+    if (!entry) throw new Error(`Profile is missing dimension ${dimensionId}`);
+    return entry;
   });
-  const profileDimensionOrder = profile.map((entry) => entry.dimension.dimensionId);
   const signalsByDimension = new Map<string, typeof result.signals>();
   for (const signal of result.signals) {
     signalsByDimension.set(signal.dimensionId, [
@@ -142,14 +144,13 @@ export function ResultsExperience({ result }: { result: GeneratedAssessmentResul
       signal,
     ]);
   }
-  const orderedSignalDimensionIds = [...signalsByDimension.keys()].sort(
-    (left, right) =>
-      profileDimensionOrder.indexOf(left) - profileDimensionOrder.indexOf(right),
+  const orderedSignalDimensionIds = respondentDimensionIds.filter((dimensionId) =>
+    signalsByDimension.has(dimensionId),
   );
   const orderedAgenda = [...result.examinationAgenda].sort((left, right) => {
     return (
-      profileDimensionOrder.indexOf(left.dimensionId) -
-      profileDimensionOrder.indexOf(right.dimensionId)
+      respondentDimensionIds.indexOf(left.dimensionId as (typeof respondentDimensionIds)[number]) -
+      respondentDimensionIds.indexOf(right.dimensionId as (typeof respondentDimensionIds)[number])
     );
   });
 
@@ -221,7 +222,7 @@ export function ResultsExperience({ result }: { result: GeneratedAssessmentResul
       <section aria-labelledby="pattern-heading" className="pattern-section" id="pattern">
         <div className="section-kicker">Pattern</div>
         <h2 id="pattern-heading">Whole-profile synthesis</h2>
-        <p className="pattern-copy">{patternCopy(result.pattern, profileDimensionOrder)}</p>
+        <p className="pattern-copy">{patternCopy(result.pattern)}</p>
         <p className="pattern-bridge">The next section moves from whole-profile description to specific evidence that met PFI&apos;s rules for deeper examination.</p>
       </section>
 

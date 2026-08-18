@@ -1,5 +1,6 @@
 import { pfiV28Catalog } from "../../domain/assessment/catalog";
 import { pfiModel } from "../../domain/pfi/model";
+import { respondentDimensionIds } from "../../domain/pfi/presentationOrder";
 import type {
   ExaminationAgendaEntry,
   GeneratedAssessmentResult,
@@ -25,17 +26,15 @@ function formatList(items: string[]): string {
   return `${items.slice(0, -1).join(", ")}, and ${items.at(-1)}`;
 }
 
-export function patternCopy(
-  pattern: PatternResult,
-  profileDimensionOrder: string[],
-): string {
-  const byProfileOrder = (ids: string[]) =>
+export function patternCopy(pattern: PatternResult): string {
+  const byPresentationOrder = (ids: string[]) =>
     [...ids].sort(
       (left, right) =>
-        profileDimensionOrder.indexOf(left) - profileDimensionOrder.indexOf(right),
+        respondentDimensionIds.indexOf(left as (typeof respondentDimensionIds)[number]) -
+        respondentDimensionIds.indexOf(right as (typeof respondentDimensionIds)[number]),
     );
   if (pattern.kind === "strength-signal-convergence") {
-    return `Strength evidence appears across ${formatList(byProfileOrder(pattern.strengthDimensionIds).map(dimensionName))}, while qualifying question-level signals occur within ${formatList(byProfileOrder(pattern.signalDimensionIds).map(dimensionName))} rather than being scattered elsewhere in the profile.`;
+    return `Strength evidence appears across ${formatList(byPresentationOrder(pattern.strengthDimensionIds).map(dimensionName))}, while qualifying question-level signals occur within ${formatList(byPresentationOrder(pattern.signalDimensionIds).map(dimensionName))} rather than being scattered elsewhere in the profile.`;
   }
   if (pattern.kind === "isolated-signal") {
     return `A qualifying question-level signal appears within ${dimensionName(pattern.signalDimensionId)}, while no pronounced broader cross-dimension pattern is evident from this assessment.`;

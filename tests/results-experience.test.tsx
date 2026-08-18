@@ -11,6 +11,7 @@ import { generateAssessmentResult } from "../src/domain/results/generation";
 import type { GeneratedAssessmentResult } from "../src/domain/results/types";
 import { loadMp01GoldenFixture } from "../src/fixtures/load";
 import { bindMp01Responses } from "../src/fixtures/mp01";
+import { respondentDimensions } from "../src/domain/pfi/presentationOrder";
 import { InMemoryAssessmentRepository } from "../src/infrastructure/persistence/InMemoryAssessmentRepository";
 import { ResultsFoundationPage } from "../src/pages/ResultsFoundationPage";
 
@@ -109,20 +110,32 @@ describe("I4 results experience", () => {
     expect(screen.getByText(/not an independent verification/)).toBeVisible();
     expect(screen.getAllByText("Strength", { exact: true })).toHaveLength(3);
     expect(within(container.querySelector("#profile")!).getAllByText(/out of 100/, { selector: ".visually-hidden" })).toHaveLength(7);
+    const expectedPresentationOrder = respondentDimensions.map(
+      (dimension) => dimension.name,
+    );
+    expect(
+      [...container.querySelectorAll(".profile-row h3")].map((item) => item.textContent),
+    ).toEqual(expectedPresentationOrder);
+    const signalDimensionIds = new Set(result.signals.map((signal) => signal.dimensionId));
+    const expectedSignalOrder = respondentDimensions
+      .filter((dimension) => signalDimensionIds.has(dimension.id))
+      .map((dimension) => dimension.name);
     expect(
       [...container.querySelectorAll(".signal-group summary")].map((item) => item.textContent),
-    ).toEqual([
-      "Multi-Rail Strategy & Future Readiness",
-      "Balance Sheet & Liquidity Contribution",
-      "Margin & Cost Structure",
-    ]);
+    ).toEqual(expectedSignalOrder);
+    const agendaDimensionIds = new Set(
+      result.examinationAgenda.map((entry) => entry.dimensionId),
+    );
+    const expectedAgendaOrder = respondentDimensions
+      .filter((dimension) => agendaDimensionIds.has(dimension.id))
+      .map((dimension) => dimension.name);
     expect(
       [...container.querySelectorAll(".agenda-heading h3")].map((item) => item.textContent),
-    ).toEqual([
-      "Multi-Rail Strategy & Future Readiness",
-      "Balance Sheet & Liquidity Contribution",
-      "Margin & Cost Structure",
-    ]);
+    ).toEqual(expectedAgendaOrder);
+    const patternText = container.querySelector(".pattern-copy")?.textContent ?? "";
+    expect(patternText.indexOf("Balance Sheet & Liquidity Contribution")).toBeLessThan(
+      patternText.indexOf("Multi-Rail Strategy & Future Readiness"),
+    );
 
     const growthRow = screen.getByRole("heading", { name: "Growth Engine Quality" }).closest("li");
     expect(growthRow).not.toBeNull();
