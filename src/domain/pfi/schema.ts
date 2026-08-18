@@ -53,4 +53,5 @@ export const pfiModelSchema = z.object({
 });
 
 export type PfiModel = z.infer<typeof pfiModelSchema>;
+export type PfiDimension = z.infer<typeof dimensionSchema>;
 export type PfiQuestion = z.infer<typeof questionSchema>;

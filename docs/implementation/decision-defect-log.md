@@ -174,3 +174,43 @@ remain unchanged.
 **Rationale:** This improves orientation within long M4-class flat lists without
 introducing score/path metadata, sticky obstruction, pagination, truncation, or
 hidden response logic.
+
+## I3-001 — Calculation precision and result contracts
+
+**Decision:** Keep full floating-point precision through question averaging and
+weighted composite calculations. Round only explicit presentation values to one
+decimal place. Produce discriminated, serializable Standard, Adjusted, and
+Insufficient-Basis contracts so I4 can render results without recalculating or
+inferring methodology.
+
+**Rationale:** v28 Sections 60–61 require full internal precision, presentation-
+boundary rounding, equal applicable-question weighting, fixed Standard weights,
+and count-first Adjusted eligibility evaluation.
+
+## I3-002 — Deterministic categorical result facts
+
+**Decision:** Generate Signals, Profile states, Examination Agenda entry types,
+Intentional-Choice registers, and conservative Pattern facts as structured
+domain output. The engine carries exact selected evidence and governed category
+identities but does not draft diagnosis, severity, recommendation, prescription,
+owner, KPI, or plan language. Pattern emits only directly supportable categorical
+configurations or the governed null state.
+
+**Rationale:** Gate 3 assigns qualification and evidence assembly to the engine
+while reserving presentation and carefully bounded prose for I4. Structured
+facts keep those responsibilities separate and deterministic.
+
+## I3-003 — MP-01 controlled-source dependency refined
+
+**Finding:** The authoritative MP-01 v0.3.3 artifact is now available. It supplies
+the seven raw dimension-score arrays, seven approved displayed Dimension Scores,
+the 74.2 Standard Composite, eight named qualifying signal outcomes, and the fact
+that Multi-Rail includes one Level-3 Intentional-Choice response. It does not
+supply a complete question-to-selected-option-ID ledger. The unordered Multi-
+Rail facts cannot be converted into that ledger without inference.
+
+**Disposition:** Import the authoritative dimension arithmetic as controlled
+golden data and validate all seven Dimension Scores plus the composite exactly.
+Keep full MP-01 option-level Signal/Intentional-Choice reproduction blocked on
+the missing controlled ledger. Do not reverse-engineer or synthesize it from the
+expected outputs.
