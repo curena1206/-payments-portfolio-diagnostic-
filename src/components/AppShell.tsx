@@ -8,7 +8,7 @@ export function AppShell({ children }: PropsWithChildren) {
         <Link className="brand" to="/">
           Payments Franchise Index
         </Link>
-        <span className="build-label">Foundation build</span>
+        <span className="build-label">Assessment experience</span>
       </header>
       <main>{children}</main>
     </div>

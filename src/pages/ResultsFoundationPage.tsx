@@ -5,8 +5,8 @@ export function ResultsFoundationPage() {
     <div className="page-stack">
       <Panel eyebrow="Results route" title="No result has been generated">
         <p>
-          The governed six-layer results experience and scoring engine are not
-          part of I0.
+          Assessment completion is available for handoff. The governed scoring
+          engine and six-layer results experience begin in later increments.
         </p>
       </Panel>
     </div>

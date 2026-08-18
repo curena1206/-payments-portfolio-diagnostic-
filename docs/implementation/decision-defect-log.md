@@ -104,3 +104,39 @@ model ID. The only supported catalog is `pfi-standard-v28`.
 **Rationale:** Stored option IDs must never be silently reinterpreted against a
 different questionnaire version. Unsupported or mismatched model identities fail
 explicitly; migration behavior is outside I1.
+
+## I2-001 — Assessment experience orchestration
+
+**Decision:** React components render authoritative model content and delegate
+all committed response transitions to the reviewed I1 service through an
+application context. The context owns loading, saving, saved, error, retry,
+resume, and recovery-association orchestration; components own only transient
+interaction state such as an open accordion panel or N/A confirmation.
+
+**Rationale:** This keeps persistence and evidence rules out of presentation
+components while allowing the full Gate 4B respondent journey to use the same
+validated transitions as non-UI clients.
+
+## I2-002 — Browser continuity adapter
+
+**Decision:** Provide versioned browser-storage adapters for assessment
+aggregates, idempotency results, the current-assessment pointer, and shared
+Contacts. Recovery association remains a Contact link only and creates no
+permission or Discussion Request state.
+
+**Rationale:** I2 requires durable same-browser autosave/resume and optional
+identity association, while production hosting, authentication, retention, and
+cross-device transport remain deployment decisions rather than questionnaire or
+scoring behavior.
+
+## I2-003 — Locked density and accessibility treatment
+
+**Decision:** Render exact v28 questions and response statements in vertically
+growing radio rows. Dual-path items remain one flat list with internal path data
+hidden. Dimension headers are full-width buttons with `aria-expanded`; N/A uses
+an eligible-only modal confirmation with initial focus, containment, Escape,
+and return focus; operational messages use live-region semantics.
+
+**Rationale:** This implements the Gate 4B/4E interaction architecture without
+compressing evidence, exposing scoring metadata, or deferring obvious
+assessment-side accessibility foundations.
