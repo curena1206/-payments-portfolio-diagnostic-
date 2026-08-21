@@ -139,7 +139,7 @@ async function completedRuntime(
 
 describe("I5 commercial bridge experience", () => {
   it("renders after the six substantive layers and supports both actions through shared identity", async () => {
-    const { runtime, permissions } = await completedRuntime();
+    const { runtime, permissions, assessmentId } = await completedRuntime();
     const { container } = render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
     expect(await screen.findByRole("heading", { name: "Continue the conversation" })).toBeVisible();
     const nextStep = container.querySelector("#next-step")!;
@@ -155,6 +155,40 @@ describe("I5 commercial bridge experience", () => {
     expect(screen.getByText(/permission for personal outreach is recorded/)).toBeVisible();
     expect(permissions.discussionRequests).toHaveLength(1);
     expect(permissions.consents).toHaveLength(1);
+    expect(permissions.discussionRequests).toEqual([
+      expect.objectContaining({ assessmentInstanceId: assessmentId }),
+    ]);
+    expect(new Set([
+      ...permissions.discussionRequests.map((item) => item.contactId),
+      ...permissions.consents.map((item) => item.contactId),
+    ])).toHaveProperty("size", 1);
+    expect((await runtime.service.resumeAssessment(assessmentId)).recoveryContactId).toBeNull();
+  });
+
+  it("creates a Contact for discussion only without creating a recovery association", async () => {
+    const { runtime, permissions, assessmentId } = await completedRuntime();
+    render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
+    fireEvent.click(await screen.findByRole("checkbox", { name: "Request a discussion" }));
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "discussion@example.com" } });
+    fireEvent.click(screen.getByRole("button", { name: "Request a discussion" }));
+    expect(await screen.findByText("Your discussion request has been received for this assessment.")).toBeVisible();
+    expect(permissions.discussionRequests).toEqual([
+      expect.objectContaining({ assessmentInstanceId: assessmentId }),
+    ]);
+    expect(permissions.consents).toHaveLength(0);
+    expect((await runtime.service.resumeAssessment(assessmentId)).recoveryContactId).toBeNull();
+  });
+
+  it("creates a Contact for consent only without creating a recovery association", async () => {
+    const { runtime, permissions, assessmentId } = await completedRuntime();
+    render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
+    fireEvent.click(await screen.findByRole("checkbox", { name: /I agree to receive occasional/ }));
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "consent@example.com" } });
+    fireEvent.click(screen.getByRole("button", { name: "Grant permission" }));
+    expect(await screen.findByText(/permission for personal outreach is recorded/)).toBeVisible();
+    expect(permissions.consents).toHaveLength(1);
+    expect(permissions.discussionRequests).toHaveLength(0);
+    expect((await runtime.service.resumeAssessment(assessmentId)).recoveryContactId).toBeNull();
   });
 
   it("allows neither action and leaves the complete result unchanged", async () => {
@@ -167,12 +201,19 @@ describe("I5 commercial bridge experience", () => {
     expect(await screen.findByRole("checkbox", { name: "Request a discussion" })).not.toBeChecked();
   });
 
-  it("renders known identity without re-requesting email and keeps consent ungranted", async () => {
-    const { runtime } = await completedRuntime(true);
+  it("reuses a pre-existing recovery Contact without changing recovery or inferring consent", async () => {
+    const { runtime, permissions, contactId, assessmentId } = await completedRuntime(true);
     render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
     fireEvent.click(await screen.findByRole("checkbox", { name: "Request a discussion" }));
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: /I agree to receive occasional/ })).not.toBeChecked();
+    fireEvent.click(screen.getByRole("button", { name: "Request a discussion" }));
+    expect(await screen.findByText("Your discussion request has been received for this assessment.")).toBeVisible();
+    expect(permissions.discussionRequests).toEqual([
+      expect.objectContaining({ contactId, assessmentInstanceId: assessmentId }),
+    ]);
+    expect(permissions.consents).toHaveLength(0);
+    expect((await runtime.service.resumeAssessment(assessmentId)).recoveryContactId).toBe(contactId);
   });
 
   it("renders granted consent and submitted discussion as acknowledgments, then supports withdrawal", async () => {

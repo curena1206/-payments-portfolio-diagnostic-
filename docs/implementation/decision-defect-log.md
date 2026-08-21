@@ -326,3 +326,13 @@ result-state facts.
 
 **Rationale:** Structural absence of result facts prevents severity-responsive
 branching and preserves Standard, Adjusted, and Insufficient-Basis behavior.
+
+## I5-004 — Commercial identity does not create recovery association
+
+**Correction:** Resolve or create the shared Contact required by an affirmed
+commercial action without associating that Contact as the Assessment Instance's
+recovery Contact. Recovery remains an independent, explicitly initiated path.
+
+**Rationale:** The locked disclosure limits use of identity entered in the
+Commercial Bridge to the affirmed choice or choices. Contact resolution is
+necessary for the scoped commercial records; recovery association is not.

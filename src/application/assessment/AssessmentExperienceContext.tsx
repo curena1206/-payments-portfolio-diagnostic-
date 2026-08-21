@@ -177,14 +177,6 @@ export function AssessmentExperienceProvider({
           });
           await runtime.identities.saveContact(contact);
         }
-        if (active.recoveryContactId !== contact.id) {
-          const updated = await runtime.service.associateRecoveryContact({
-            assessmentId: active.id, contactId: contact.id,
-            idempotencyKey: runtime.newId(),
-          });
-          setActive(updated);
-          setRecoverable(updated);
-        }
         return contact;
       },
       commercial: runtime.commercial,
