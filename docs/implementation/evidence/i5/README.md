@@ -17,7 +17,7 @@
   present in the browser accessibility tree.
 - At the actual 1280px viewport, document scroll width equaled client width
   (1265px), the bridge did not overflow, and its two action panels rendered as
-  two equal columns. See `results-commercial-flow-1280.png`.
+  two equal columns. See `results-commercial-flow-1280.jpg`.
 
 ## Remaining runtime-evidence dependency
 
