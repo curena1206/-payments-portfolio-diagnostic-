@@ -4,6 +4,22 @@ import { describe, expect, it } from "vitest";
 import { App } from "../src/app/App";
 
 describe("application shell", () => {
+  it("keeps keyboard-accessible CarlosUrena.com navigation on every public route", () => {
+    for (const route of ["/", "/assessment", "/results"]) {
+      const view = render(
+        <MemoryRouter initialEntries={[route]}>
+          <App />
+        </MemoryRouter>,
+      );
+      const homeLink = screen.getByRole("link", { name: "Carlos Ureña" });
+      expect(homeLink).toHaveAttribute("href", "https://carlosurena.com/");
+      homeLink.focus();
+      expect(homeLink).toHaveFocus();
+      expect(screen.getByRole("link", { name: "Payments Franchise Index" })).toBeVisible();
+      view.unmount();
+    }
+  });
+
   it("renders the entry route", () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
