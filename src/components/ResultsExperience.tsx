@@ -12,12 +12,16 @@ import {
   strengthEvidence,
 } from "../application/results/content";
 
+function executiveDisplayScore(score: number): string {
+  return Math.round(score).toString();
+}
+
 function CompositeDisclosure({ composite }: { composite: CompositeResult }) {
   if (composite.state === "standard") {
     return (
       <>
         <p className="result-explanation">
-          Your PFI Composite is {composite.displayScore}/100, a weighted summary
+          Your PFI Composite is {executiveDisplayScore(composite.displayScore)}/100, a weighted summary
           of your responses across seven payments franchise dimensions.
         </p>
         <p className="result-disclosure">
@@ -107,7 +111,7 @@ function ProfileRow({ entry }: { entry: ProfileEntry }) {
       <div className="profile-row-heading">
         <h3>{entry.dimension.dimensionName}</h3>
         <div className="profile-score">
-          {score === null ? "Insufficient basis" : score.toFixed(1)}
+          {score === null ? "Insufficient basis" : executiveDisplayScore(score)}
           {score !== null ? <span className="visually-hidden"> out of 100</span> : null}
         </div>
         {isStrength ? <strong className="strength-label">Strength</strong> : null}
@@ -178,10 +182,14 @@ export function ResultsExperience({ result }: { result: GeneratedAssessmentResul
         </h2>
         {result.composite.displayScore !== null ? (
           <p className="composite-number">
-            {result.composite.displayScore.toFixed(1)} <span>/ 100</span>
+            {executiveDisplayScore(result.composite.displayScore)} <span>/ 100</span>
           </p>
         ) : null}
         <CompositeDisclosure composite={result.composite} />
+        <p className="score-rounding-disclosure">
+          Scores are rounded to the nearest whole number for display.
+          Calculations retain full underlying precision.
+        </p>
         <MethodologyReference composite={result.composite} />
       </section>
 
@@ -240,7 +248,7 @@ export function ResultsExperience({ result }: { result: GeneratedAssessmentResul
                 <article className="agenda-entry" key={`${entry.type}-${entryId}`}>
                   <header className="agenda-heading">
                     <h3>{entry.type === "dimension" ? dimensionName(entry.dimensionId) : pfiModel.dimensions.flatMap((dimension) => dimension.questions).find((question) => question.id === entry.questionId)?.title}</h3>
-                    {entry.type === "dimension" ? <span>{entry.dimensionScore.toFixed(1)} <span className="visually-hidden">out of 100</span></span> : null}
+                    {entry.type === "dimension" ? <span>{executiveDisplayScore(entry.dimensionScore)} <span className="visually-hidden">out of 100</span></span> : null}
                   </header>
                   <div className="agenda-jobs">
                     <section aria-labelledby={`${entryId}-shows`}>

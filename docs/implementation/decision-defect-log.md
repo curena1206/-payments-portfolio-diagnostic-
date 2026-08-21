@@ -275,3 +275,23 @@ all seven Profile rows, eight Signals, three Agenda entries, and six navigation
 links remained present. Desktop evidence covers Result, Profile, Signals,
 Pattern, and Agenda; mobile and empty operational-state evidence are retained in
 `docs/implementation/evidence/i4/`.
+
+## I4-005 — Executive display precision
+
+**Decision:** Render respondent-facing Composite and Dimension Scores as
+conventionally rounded whole numbers. Full precision remains authoritative for
+calculation and validation, including the MP-01 74.2 validation control and all
+stored/result-domain numeric values.
+
+**Rationale:** Tenths of an index point are not treated as managerially
+decision-useful distinctions in the executive experience. Display rounding does
+not affect PFI methodology, qualification, Standard/Adjusted/Insufficient Basis
+determination, or Strength, Signal, Pattern, and Examination Agenda logic. The
+achievable Dimension Score set was checked against the locked Strength (>=80)
+and Dimension Agenda (<=40) boundaries; no misleading display/qualification
+boundary conflict was identified.
+
+**Reconsideration boundary:** Display precision is a presentation-layer
+convention that may later be reconsidered based on observed user comprehension
+or feedback without changing PFI methodology, provided underlying calculation
+and qualification logic remain unchanged.

@@ -106,7 +106,13 @@ describe("I4 results experience", () => {
     const { container } = render(<ResultsExperience result={result} />);
 
     expect(screen.getByRole("heading", { name: "Your PFI Composite" })).toBeVisible();
-    expect(screen.getByText("74.2", { exact: true })).toBeVisible();
+    expect(result.composite.displayScore).toBe(74.2);
+    expect(result.composite.score).toBeCloseTo(74.22371428571428, 12);
+    expect(screen.getByText("74", { exact: true })).toBeVisible();
+    expect(screen.queryByText("74.2", { exact: true })).not.toBeInTheDocument();
+    expect(screen.getByText(
+      "Scores are rounded to the nearest whole number for display. Calculations retain full underlying precision.",
+    )).toBeVisible();
     expect(screen.getByText(/not an independent verification/)).toBeVisible();
     expect(screen.getAllByText("Strength", { exact: true })).toHaveLength(3);
     expect(within(container.querySelector("#profile")!).getAllByText(/out of 100/, { selector: ".visually-hidden" })).toHaveLength(7);
@@ -150,6 +156,39 @@ describe("I4 results experience", () => {
     }
   });
 
+  it("renders whole-number MP-01 scores without changing underlying precision or governed classifications", async () => {
+    const { result } = await buildMp01();
+    const { container } = render(<ResultsExperience result={result} />);
+    const expectedUnderlying = {
+      "client-value": { score: 94.28571428571428, displayScore: 94.3 },
+      governance: { score: 91.42857142857143, displayScore: 91.4 },
+      revenue: { score: 88.57142857142857, displayScore: 88.6 },
+      "balance-sheet": { score: 31.428571428571427, displayScore: 31.4 },
+      "multi-rail": { score: 34.285714285714285, displayScore: 34.3 },
+      "margin-cost": { score: 28.57142857142857, displayScore: 28.6 },
+      "growth-engine": { score: 57.14285714285714, displayScore: 57.1 },
+    } as const;
+
+    for (const dimension of result.dimensions) {
+      const expected = expectedUnderlying[dimension.dimensionId as keyof typeof expectedUnderlying];
+      expect(dimension.status).toBe("scored");
+      expect(dimension.score).toBeCloseTo(expected.score, 12);
+      expect(dimension.displayScore).toBe(expected.displayScore);
+    }
+    expect(
+      [...container.querySelectorAll(".profile-score")].map((item) => item.textContent?.trim()),
+    ).toEqual(["94 out of 100", "91 out of 100", "89 out of 100", "31 out of 100", "34 out of 100", "29 out of 100", "57 out of 100"]);
+    expect(result.profile.map((entry) => entry.state)).toEqual([
+      "formal-strength", "formal-strength", "formal-strength", "standard-scored",
+      "standard-scored", "standard-scored", "standard-scored",
+    ]);
+    expect(result.signals).toHaveLength(8);
+    expect(result.pattern.kind).toBe("strength-signal-convergence");
+    expect(result.examinationAgenda.filter((entry) => entry.type === "dimension").map((entry) => entry.dimensionId)).toEqual([
+      "balance-sheet", "multi-rail", "margin-cost",
+    ]);
+  });
+
   it("keeps all eight Signals and their exact selected evidence reachable", async () => {
     const { result } = await buildMp01();
     render(<ResultsExperience result={result} />);
@@ -180,6 +219,7 @@ describe("I4 results experience", () => {
     const { result } = await buildMp01();
     const adjusted = render(<ResultsExperience result={adjustedResult(result)} />);
     expect(screen.getByRole("heading", { name: "Adjusted PFI Composite" })).toBeVisible();
+    expect(screen.getByText("76", { exact: true })).toBeVisible();
     expect(screen.getByText("6 of 7")).toBeVisible();
     expect(screen.getByText("95.74%")).toBeVisible();
     expect(screen.getByText("Growth Engine Quality", { selector: "dd" })).toBeVisible();
@@ -253,5 +293,7 @@ describe("I4 results experience", () => {
     for (const prohibited of ["diagnosis", "recommendation", "prescription", "maturity", "severity", "owner", "kpi", "30/60/90"]) {
       expect(text).not.toContain(prohibited);
     }
+    expect(text).not.toContain("discussion request");
+    expect(text).not.toContain("consent");
   });
 });
