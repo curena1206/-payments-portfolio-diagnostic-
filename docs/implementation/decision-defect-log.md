@@ -336,3 +336,16 @@ recovery Contact. Recovery remains an independent, explicitly initiated path.
 **Rationale:** The locked disclosure limits use of identity entered in the
 Commercial Bridge to the affirmed choice or choices. Contact resolution is
 necessary for the scoped commercial records; recovery association is not.
+
+## I6-001 — Implementation completion is not release authorization
+
+**Decision:** Classify the integrated I0–I6 build as implementation complete
+with release gates remaining. No blocking implementation defect was found in
+the integrated product paths, but E-01–E-10 have not been executed and external
+production persistence, privacy, commercial delivery, monitoring, retention,
+hosting, and assistive-technology verification remain open.
+
+**Rationale:** Gate 4E and the Implementation Workplan explicitly prohibit
+inferring empirical or production readiness from code inspection. External
+infrastructure choices remain governed deployment decisions, not permission to
+invent a backend in I6.
