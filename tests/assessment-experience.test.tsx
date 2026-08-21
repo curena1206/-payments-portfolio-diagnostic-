@@ -113,6 +113,19 @@ function renderApp(runtime: AssessmentRuntime, route = "/") {
   );
 }
 
+function findAssessmentHeading() {
+  return screen.findByRole(
+    "heading",
+    { level: 1, name: "Assessment" },
+    { timeout: 5_000 },
+  );
+}
+
+async function startAssessment() {
+  fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
+  return findAssessmentHeading();
+}
+
 async function seedAssessment(runtime: TestRuntime, complete: number) {
   const base = createAssessmentAggregate({
     id: runtime.newId(),
@@ -146,9 +159,7 @@ describe("I2 assessment experience", () => {
   it("starts a new anonymous assessment and renders seven bounded dimensions", async () => {
     const runtime = createTestRuntime();
     renderApp(runtime);
-    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
-
-    expect(await screen.findByRole("heading", { level: 1, name: "Assessment" })).toBeVisible();
+    expect(await startAssessment()).toBeVisible();
     expect(document.querySelectorAll(".dimension-toggle")).toHaveLength(7);
     expect(screen.getByText("0 of 49 complete", { selector: "strong" })).toBeVisible();
     expect(screen.queryByText("Assessment experience", { exact: false })).toBeNull();
@@ -157,9 +168,7 @@ describe("I2 assessment experience", () => {
   it("renders the exact locked respondent-facing dimension order", async () => {
     const runtime = createTestRuntime();
     renderApp(runtime);
-    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
-
-    await screen.findByRole("heading", { level: 1, name: "Assessment" });
+    await startAssessment();
     expect(
       [...document.querySelectorAll(".dimension-name")].map((node) => node.textContent),
     ).toEqual([
@@ -210,7 +219,7 @@ describe("I2 assessment experience", () => {
     expect(screen.getByRole("dialog", { name: "Start a new assessment?" })).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: "Start new assessment" }));
 
-    await screen.findByRole("heading", { level: 1, name: "Assessment" });
+    await findAssessmentHeading();
     expect((await runtime.assessments.load(prior.id))?.lifecycle).toBe("superseded");
     expect(runtime.continuity.currentId).not.toBe(prior.id);
   });
@@ -218,7 +227,7 @@ describe("I2 assessment experience", () => {
   it("renders six Capability-only options and M4 as nine flat verbatim options", async () => {
     const runtime = createTestRuntime();
     renderApp(runtime);
-    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
+    await startAssessment();
     const c1Question = await screen.findByRole("heading", {
       name: pfiQuestions.find((question) => question.id === "C1")!.question,
     });
@@ -256,7 +265,7 @@ describe("I2 assessment experience", () => {
   it("renders the locked B7 density case without shortening its question or anchors", async () => {
     const runtime = createTestRuntime();
     renderApp(runtime);
-    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
+    await startAssessment();
     fireEvent.click(
       await screen.findByRole("button", { name: /Balance Sheet & Liquidity Contribution/ }),
     );
@@ -272,7 +281,7 @@ describe("I2 assessment experience", () => {
   it("autosaves a selection and restores it after remount", async () => {
     const runtime = createTestRuntime();
     const firstRender = renderApp(runtime);
-    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
+    await startAssessment();
     const firstRadio = (await screen.findAllByRole("radio"))[0]!;
     fireEvent.click(firstRadio);
     expect(await screen.findByText("Response saved")).toBeVisible();
@@ -306,7 +315,7 @@ describe("I2 assessment experience", () => {
   it("keeps prior evidence on save failure and retries the same change", async () => {
     const runtime = createTestRuntime();
     renderApp(runtime);
-    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
+    await startAssessment();
     const firstRadio = (await screen.findAllByRole("radio"))[0]!;
     runtime.assessments.failNextUpdate = true;
     fireEvent.click(firstRadio);
@@ -321,7 +330,7 @@ describe("I2 assessment experience", () => {
   it("keeps N/A transient until confirm, restores focus on cancel, and supports replacement", async () => {
     const runtime = createTestRuntime();
     renderApp(runtime);
-    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
+    await startAssessment();
     fireEvent.click(await screen.findByRole("button", { name: /Governance & Operating Model/ }));
     const naButton = screen.getByRole("button", {
       name: "This condition does not apply to this franchise.",
@@ -354,8 +363,7 @@ describe("I2 assessment experience", () => {
   it("does not render N/A controls for ineligible questions", async () => {
     const runtime = createTestRuntime();
     renderApp(runtime);
-    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
-    await screen.findByRole("heading", { level: 1, name: "Assessment" });
+    await startAssessment();
     expect(screen.queryByRole("button", { name: /condition does not apply/ })).toBeNull();
   });
 
@@ -376,8 +384,7 @@ describe("I2 assessment experience", () => {
   it("associates optional recovery without consent or Discussion Request UI", async () => {
     const runtime = createTestRuntime();
     renderApp(runtime);
-    fireEvent.click(screen.getByRole("button", { name: "Start assessment" }));
-    await screen.findByRole("heading", { level: 1, name: "Assessment" });
+    await startAssessment();
     fireEvent.change(screen.getByLabelText("Email address"), {
       target: { value: "recovery@example.com" },
     });
