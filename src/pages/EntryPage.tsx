@@ -71,7 +71,7 @@ export function EntryPage() {
           <section className="entry-card entry-empty">
             <p className="eyebrow">Returning assessment</p>
             <h2>No assessment to resume</h2>
-            <p>Start a new assessment on this browser. Optional cross-device recovery can be added later.</p>
+            <p>Start a new assessment on this browser. Your responses are saved here automatically so you can return later.</p>
           </section>
         )}
       </div>

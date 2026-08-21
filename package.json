@@ -6,12 +6,12 @@
   "engines": { "node": ">=22.0.0" },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && node scripts/prepare-site-output.mjs && vite build && node scripts/create-static-routes.mjs",
     "lint": "eslint .",
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "eslint . && tsc -b --pretty false && vitest run && vite build"
+    "verify": "eslint . && tsc -b --pretty false && vitest run && node scripts/prepare-site-output.mjs && vite build && node scripts/create-static-routes.mjs"
   },
   "dependencies": {
     "react": "19.2.8",

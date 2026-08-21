@@ -1,12 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
-import { App } from "../src/app/App";
+import { AssessmentExperienceProvider } from "../src/application/assessment/AssessmentExperienceContext";
 import type { AssessmentRuntime } from "../src/application/assessment/runtime";
+import { CommercialBridge } from "../src/components/CommercialBridge";
+import { ResultsExperience } from "../src/components/ResultsExperience";
 import { pfiV28Catalog } from "../src/domain/assessment/catalog";
 import { AssessmentService } from "../src/domain/assessment/service";
 import { CommercialBridgeService } from "../src/domain/identity/commercialService";
 import { contactSchema, type CommercialConsent, type CommercialWriteCommand, type Contact, type DiscussionRequest, type IdentityRepository } from "../src/domain/identity/contracts";
+import { generateAssessmentResult } from "../src/domain/results/generation";
 import { loadMp01GoldenFixture } from "../src/fixtures/load";
 import { bindMp01Responses } from "../src/fixtures/mp01";
 import { InMemoryAssessmentRepository } from "../src/infrastructure/persistence/InMemoryAssessmentRepository";
@@ -137,10 +140,28 @@ async function completedRuntime(
   };
 }
 
+async function renderCommercialExperience(fixture: Awaited<ReturnType<typeof completedRuntime>>) {
+  const assessment = await fixture.runtime.service.resumeAssessment(fixture.assessmentId);
+  const result = generateAssessmentResult(assessment);
+  return render(
+    <MemoryRouter>
+      <AssessmentExperienceProvider runtime={fixture.runtime}>
+        <ResultsExperience result={result}>
+          <CommercialBridge
+            assessmentInstanceId={fixture.assessmentId}
+            initialContactId={fixture.contactId}
+          />
+        </ResultsExperience>
+      </AssessmentExperienceProvider>
+    </MemoryRouter>,
+  );
+}
+
 describe("I5 commercial bridge experience", () => {
   it("renders after the six substantive layers and supports both actions through shared identity", async () => {
-    const { runtime, permissions, assessmentId } = await completedRuntime();
-    const { container } = render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
+    const fixture = await completedRuntime();
+    const { runtime, permissions, assessmentId } = fixture;
+    const { container } = await renderCommercialExperience(fixture);
     expect(await screen.findByRole("heading", { name: "Continue the conversation" })).toBeVisible();
     const nextStep = container.querySelector("#next-step")!;
     const bridge = container.querySelector("#commercial-bridge")!;
@@ -166,8 +187,9 @@ describe("I5 commercial bridge experience", () => {
   });
 
   it("creates a Contact for discussion only without creating a recovery association", async () => {
-    const { runtime, permissions, assessmentId } = await completedRuntime();
-    render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
+    const fixture = await completedRuntime();
+    const { runtime, permissions, assessmentId } = fixture;
+    await renderCommercialExperience(fixture);
     fireEvent.click(await screen.findByRole("checkbox", { name: "Request a discussion" }));
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "discussion@example.com" } });
     fireEvent.click(screen.getByRole("button", { name: "Request a discussion" }));
@@ -180,8 +202,9 @@ describe("I5 commercial bridge experience", () => {
   });
 
   it("creates a Contact for consent only without creating a recovery association", async () => {
-    const { runtime, permissions, assessmentId } = await completedRuntime();
-    render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
+    const fixture = await completedRuntime();
+    const { runtime, permissions, assessmentId } = fixture;
+    await renderCommercialExperience(fixture);
     fireEvent.click(await screen.findByRole("checkbox", { name: /I agree to receive occasional/ }));
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "consent@example.com" } });
     fireEvent.click(screen.getByRole("button", { name: "Grant permission" }));
@@ -192,8 +215,9 @@ describe("I5 commercial bridge experience", () => {
   });
 
   it("allows neither action and leaves the complete result unchanged", async () => {
-    const { runtime, permissions } = await completedRuntime();
-    render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
+    const fixture = await completedRuntime();
+    const { permissions } = fixture;
+    await renderCommercialExperience(fixture);
     expect(await screen.findByText(/Both options are optional and do not affect/)).toBeVisible();
     expect(screen.getByRole("heading", { name: "Your PFI Composite" })).toBeVisible();
     expect(permissions.discussionRequests).toHaveLength(0);
@@ -202,8 +226,9 @@ describe("I5 commercial bridge experience", () => {
   });
 
   it("reuses a pre-existing recovery Contact without changing recovery or inferring consent", async () => {
-    const { runtime, permissions, contactId, assessmentId } = await completedRuntime(true);
-    render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
+    const fixture = await completedRuntime(true);
+    const { runtime, permissions, contactId, assessmentId } = fixture;
+    await renderCommercialExperience(fixture);
     fireEvent.click(await screen.findByRole("checkbox", { name: "Request a discussion" }));
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: /I agree to receive occasional/ })).not.toBeChecked();
@@ -220,7 +245,7 @@ describe("I5 commercial bridge experience", () => {
     const fixture = await completedRuntime(true);
     await fixture.runtime.commercial.grantConsent({ contactId: fixture.contactId!, idempotencyKey: "seed-consent" });
     await fixture.runtime.commercial.requestDiscussion({ contactId: fixture.contactId!, assessmentInstanceId: fixture.assessmentId, idempotencyKey: "seed-dr" });
-    render(<MemoryRouter initialEntries={["/results"]}><App runtime={fixture.runtime} /></MemoryRouter>);
+    await renderCommercialExperience(fixture);
     expect(await screen.findByText("Your discussion request has been received for this assessment.")).toBeVisible();
     expect(screen.getByText(/permission for personal outreach is recorded/)).toBeVisible();
     expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
@@ -234,7 +259,7 @@ describe("I5 commercial bridge experience", () => {
     const permissions = new SelectivelyFailingPermissions();
     permissions.failConsent = true;
     const fixture = await completedRuntime(true, permissions);
-    render(<MemoryRouter initialEntries={["/results"]}><App runtime={fixture.runtime} /></MemoryRouter>);
+    await renderCommercialExperience(fixture);
     fireEvent.click(await screen.findByRole("checkbox", { name: "Request a discussion" }));
     fireEvent.click(screen.getByRole("checkbox", { name: /I agree to receive occasional/ }));
     fireEvent.click(screen.getByRole("button", { name: "Submit selected choices" }));
@@ -252,7 +277,7 @@ describe("I5 commercial bridge experience", () => {
     const permissions = new SelectivelyFailingPermissions();
     permissions.failDiscussion = true;
     const fixture = await completedRuntime(true, permissions);
-    render(<MemoryRouter initialEntries={["/results"]}><App runtime={fixture.runtime} /></MemoryRouter>);
+    await renderCommercialExperience(fixture);
     fireEvent.click(await screen.findByRole("checkbox", { name: "Request a discussion" }));
     fireEvent.click(screen.getByRole("checkbox", { name: /I agree to receive occasional/ }));
     fireEvent.click(screen.getByRole("button", { name: "Submit selected choices" }));
@@ -267,8 +292,8 @@ describe("I5 commercial bridge experience", () => {
   });
 
   it("moves focus to shared identity when an unknown respondent selects an action", async () => {
-    const { runtime } = await completedRuntime();
-    render(<MemoryRouter initialEntries={["/results"]}><App runtime={runtime} /></MemoryRouter>);
+    const fixture = await completedRuntime();
+    await renderCommercialExperience(fixture);
     fireEvent.click(await screen.findByRole("checkbox", { name: "Request a discussion" }));
     expect(screen.getByRole("textbox")).toHaveFocus();
   });

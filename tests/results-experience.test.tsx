@@ -269,6 +269,9 @@ describe("I4 results experience", () => {
       <MemoryRouter><AssessmentExperienceProvider runtime={runtime}><ResultsFoundationPage /></AssessmentExperienceProvider></MemoryRouter>,
     );
     await waitFor(() => expect(screen.getByRole("heading", { name: "Your PFI result" })).toBeVisible());
+    expect(screen.queryByRole("heading", { name: "Continue the conversation" })).toBeNull();
+    expect(screen.queryByText("Request a discussion")).toBeNull();
+    expect(screen.queryByText(/receive occasional PFI and payments insights/i)).toBeNull();
     success.unmount();
 
     const assessmentId = runtime.continuity.getCurrentAssessmentId()!;

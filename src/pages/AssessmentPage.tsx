@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAssessmentExperience } from "../application/assessment/AssessmentExperienceContext";
 import { QuestionCard } from "../components/QuestionCard";
-import { RecoveryPanel } from "../components/RecoveryPanel";
 import { SaveStatus } from "../components/SaveStatus";
 import {
   getAssessmentProgress,
@@ -111,11 +110,6 @@ export function AssessmentPage() {
           );
         })}
       </div>
-
-      <RecoveryPanel
-        enabled={active.recoveryContactId !== null}
-        onEnable={(email) => experience.associateRecovery(email)}
-      />
 
       <section className="completion-panel" aria-labelledby="completion-title">
         <div>

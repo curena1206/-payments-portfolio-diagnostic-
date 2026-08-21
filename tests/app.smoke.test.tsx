@@ -12,6 +12,9 @@ describe("application shell", () => {
     );
     expect(screen.getByRole("heading", { level: 1, name: /Assess the commercial health/ })).toBeVisible();
     expect(screen.getByText(/49 evidence-based questions/)).toBeVisible();
+    expect(screen.getByText(/saved automatically in this browser/)).toBeVisible();
+    expect(screen.queryByText(/cross-device/i)).toBeNull();
+    expect(screen.queryByText(/recovery/i)).toBeNull();
   });
 
   it("does not silently create an assessment from a direct route", () => {

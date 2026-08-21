@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAssessmentExperience } from "../application/assessment/AssessmentExperienceContext";
 import { ResultsExperience } from "../components/ResultsExperience";
-import { CommercialBridge } from "../components/CommercialBridge";
 import { generateAssessmentResult } from "../domain/results/generation";
 import type { GeneratedAssessmentResult } from "../domain/results/types";
 
@@ -33,9 +32,5 @@ export function ResultsFoundationPage() {
       </div>
     );
   }
-  return (
-    <ResultsExperience result={result}>
-      <CommercialBridge assessmentInstanceId={active.id} initialContactId={active.recoveryContactId} />
-    </ResultsExperience>
-  );
+  return <ResultsExperience result={result} />;
 }

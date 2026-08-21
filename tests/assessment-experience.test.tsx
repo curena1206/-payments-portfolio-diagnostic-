@@ -387,18 +387,13 @@ describe("I2 assessment experience", () => {
     expect(await screen.findByRole("button", { name: "View results" })).toBeEnabled();
   });
 
-  it("associates optional recovery without consent or Discussion Request UI", async () => {
+  it("suppresses unavailable cross-device recovery while retaining same-browser persistence", async () => {
     const runtime = createTestRuntime();
     renderApp(runtime);
     await startAssessment();
-    fireEvent.change(screen.getByLabelText("Email address"), {
-      target: { value: "recovery@example.com" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Enable recovery" }));
-
-    expect(await screen.findByText("Recovery enabled")).toBeVisible();
-    expect(screen.getByText("This does not grant marketing permission.")).toBeVisible();
-    expect(screen.queryByText(/Discussion Request/i)).toBeNull();
-    expect(runtime.identities.contacts.size).toBe(1);
+    expect(screen.queryByRole("heading", { name: "Continue on another device" })).toBeNull();
+    expect(screen.queryByLabelText("Email address")).toBeNull();
+    expect(screen.queryByText(/cross-device recovery/i)).toBeNull();
+    expect(runtime.identities.contacts.size).toBe(0);
   });
 });
