@@ -36,9 +36,15 @@ export interface IdentityRepository {
 
 export interface CommercialPermissionRepository {
   getCurrentConsent(contactId: string): Promise<CommercialConsent | null>;
-  saveConsent(consent: CommercialConsent): Promise<void>;
+  saveConsent(command: CommercialWriteCommand<CommercialConsent>): Promise<CommercialConsent>;
   getDiscussionRequest(
     assessmentInstanceId: string,
   ): Promise<DiscussionRequest | null>;
-  saveDiscussionRequest(request: DiscussionRequest): Promise<void>;
+  saveDiscussionRequest(command: CommercialWriteCommand<DiscussionRequest>): Promise<DiscussionRequest>;
+}
+
+export interface CommercialWriteCommand<T> {
+  record: T;
+  idempotencyKey: string;
+  commandFingerprint: string;
 }

@@ -295,3 +295,34 @@ boundary conflict was identified.
 convention that may later be reconsidered based on observed user comprehension
 or feedback without changing PFI methodology, provided underlying calculation
 and qualification logic remain unchanged.
+
+## I5-001 — Commercial actions use independent scoped transactions
+
+**Decision:** Implement Assessment Discussion Request and commercial consent as
+separate service commands and separate idempotent repository writes. Discussion
+Request is indexed by assessment instance; current consent is resolved from a
+contact-scoped event history. A shared email interaction may establish one
+Contact for both selected commands, but email capture is not either command.
+
+**Rationale:** Gate 3F and Gate 4E require operational efficiency without
+semantic bundling. Independent writes allow either action to succeed, fail, and
+retry without mutating or duplicating the other.
+
+## I5-002 — Consent withdrawal is a prospective contact event
+
+**Decision:** Record withdrawal as a new contact-scoped consent event and render
+the latest event as current status. Do not delete or mutate prior consent events,
+assessment evidence, or historical instance-scoped Discussion Requests.
+
+**Rationale:** This preserves the locked withdrawal/revisit and audit-metadata
+contract while keeping discussion history independent.
+
+## I5-003 — Commercial bridge remains result-invariant
+
+**Decision:** Mount one commercial bridge after the substantive Next Step. Its
+inputs are only assessment-instance identity and current Contact association;
+it receives no composite, Dimension Score, Strength, Signal, Pattern, Agenda, or
+result-state facts.
+
+**Rationale:** Structural absence of result facts prevents severity-responsive
+branching and preserves Standard, Adjusted, and Insufficient-Basis behavior.

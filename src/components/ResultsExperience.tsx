@@ -11,6 +11,7 @@ import {
   patternCopy,
   strengthEvidence,
 } from "../application/results/content";
+import type { ReactNode } from "react";
 
 function executiveDisplayScore(score: number): string {
   return Math.round(score).toString();
@@ -133,7 +134,7 @@ function ProfileRow({ entry }: { entry: ProfileEntry }) {
   );
 }
 
-export function ResultsExperience({ result }: { result: GeneratedAssessmentResult }) {
+export function ResultsExperience({ result, children }: { result: GeneratedAssessmentResult; children?: ReactNode }) {
   const profile = respondentDimensionIds.map((dimensionId) => {
     const entry = result.profile.find(
       (candidate) => candidate.dimension.dimensionId === dimensionId,
@@ -278,6 +279,7 @@ export function ResultsExperience({ result }: { result: GeneratedAssessmentResul
         <h2 id="next-step-heading">Continue with the evidence</h2>
         <p>{result.governingPrinciple}</p>
       </section>
+      {children}
     </article>
   );
 }

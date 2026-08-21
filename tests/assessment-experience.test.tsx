@@ -7,6 +7,8 @@ import type {
   ContinuityStore,
 } from "../src/application/assessment/runtime";
 import { createBrowserAssessmentRuntime } from "../src/application/assessment/runtime";
+import { CommercialBridgeService } from "../src/domain/identity/commercialService";
+import { InMemoryCommercialPermissionRepository } from "../src/infrastructure/persistence/InMemoryCommercialPermissionRepository";
 import {
   createAssessmentAggregate,
   type AssessmentAggregate,
@@ -89,9 +91,13 @@ function createTestRuntime(): TestRuntime {
     `10000000-0000-4000-8000-${String(idCounter++).padStart(12, "0")}`;
   const now = () =>
     `2026-08-18T10:00:${String(timeCounter++).padStart(2, "0")}+02:00`;
+  const commercial = new CommercialBridgeService({
+    permissions: new InMemoryCommercialPermissionRepository(), identities, now, newId,
+  });
   return {
     assessments,
     identities,
+    commercial,
     continuity,
     newId,
     now,

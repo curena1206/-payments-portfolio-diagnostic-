@@ -9,7 +9,8 @@ import {
   type PropsWithChildren,
 } from "react";
 import type { AssessmentAggregate } from "../../domain/assessment/aggregate";
-import { contactSchema } from "../../domain/identity/contracts";
+import { contactSchema, type Contact } from "../../domain/identity/contracts";
+import type { CommercialBridgeService } from "../../domain/identity/commercialService";
 import {
   createBrowserAssessmentRuntime,
   type AssessmentRuntime,
@@ -30,6 +31,9 @@ interface AssessmentExperienceValue {
   confirmNotApplicable: (questionId: string) => Promise<void>;
   retrySave: () => Promise<void>;
   associateRecovery: (email: string) => Promise<void>;
+  identifyForCommercialAction: (email: string) => Promise<Contact>;
+  commercial: CommercialBridgeService;
+  newId: () => string;
 }
 
 const AssessmentExperienceContext = createContext<AssessmentExperienceValue | null>(
@@ -163,6 +167,28 @@ export function AssessmentExperienceProvider({
         };
         await commit(() => runtime.service.associateRecoveryContact(command));
       },
+      identifyForCommercialAction: async (email) => {
+        if (!active) throw new Error("No active assessment");
+        const normalized = email.trim().toLowerCase();
+        let contact = await runtime.identities.findContactByEmail(normalized);
+        if (!contact) {
+          contact = contactSchema.parse({
+            id: runtime.newId(), email: normalized, createdAt: runtime.now(),
+          });
+          await runtime.identities.saveContact(contact);
+        }
+        if (active.recoveryContactId !== contact.id) {
+          const updated = await runtime.service.associateRecoveryContact({
+            assessmentId: active.id, contactId: contact.id,
+            idempotencyKey: runtime.newId(),
+          });
+          setActive(updated);
+          setRecoverable(updated);
+        }
+        return contact;
+      },
+      commercial: runtime.commercial,
+      newId: () => runtime.newId(),
     }),
     [
       active,

@@ -7,12 +7,14 @@ import { ResultsExperience } from "../src/components/ResultsExperience";
 import { pfiV28Catalog } from "../src/domain/assessment/catalog";
 import { AssessmentService } from "../src/domain/assessment/service";
 import type { Contact, IdentityRepository } from "../src/domain/identity/contracts";
+import { CommercialBridgeService } from "../src/domain/identity/commercialService";
 import { generateAssessmentResult } from "../src/domain/results/generation";
 import type { GeneratedAssessmentResult } from "../src/domain/results/types";
 import { loadMp01GoldenFixture } from "../src/fixtures/load";
 import { bindMp01Responses } from "../src/fixtures/mp01";
 import { respondentDimensions } from "../src/domain/pfi/presentationOrder";
 import { InMemoryAssessmentRepository } from "../src/infrastructure/persistence/InMemoryAssessmentRepository";
+import { InMemoryCommercialPermissionRepository } from "../src/infrastructure/persistence/InMemoryCommercialPermissionRepository";
 import { ResultsFoundationPage } from "../src/pages/ResultsFoundationPage";
 
 class EmptyIdentities implements IdentityRepository {
@@ -36,6 +38,10 @@ async function buildMp01(): Promise<{
     now,
     newId: () => "20000000-0000-4000-8000-000000000001",
   });
+  const commercial = new CommercialBridgeService({
+    permissions: new InMemoryCommercialPermissionRepository(), identities, now,
+    newId: () => "20000000-0000-4000-8000-000000000003",
+  });
   let assessment = await service.createAssessment({ idempotencyKey: "create" });
   for (const [index, response] of bindMp01Responses(
     loadMp01GoldenFixture(),
@@ -53,6 +59,7 @@ async function buildMp01(): Promise<{
     runtime: {
       service,
       identities,
+      commercial,
       continuity: {
         getCurrentAssessmentId: () => assessment.id,
         setCurrentAssessmentId: () => undefined,
