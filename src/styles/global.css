@@ -8,11 +8,11 @@ a { color: inherit; }
 .visually-hidden { clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
 .app-shell { min-height: 100vh; }
 .site-header { align-items: center; background: var(--color-ink); color: white; display: flex; justify-content: space-between; min-height: 4rem; padding: var(--space-4) max(var(--space-6), calc((100vw - var(--content-width)) / 2)); }
-.site-identity { align-items: baseline; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.site-identity { align-items: baseline; display: flex; flex-wrap: wrap; gap: var(--space-3); }
 .site-home-link { font-size: 0.875rem; font-weight: 750; text-decoration: none; }
 .site-home-link:hover { text-decoration: underline; text-underline-offset: 0.2rem; }
-.site-identity-divider { color: #aeb8c4; }
-.brand { font-family: var(--font-display); font-size: 1.125rem; text-decoration: none; }
+.site-identity-divider { color: #7f8b99; margin-inline: var(--space-1); }
+.brand { font-family: var(--font-display); font-size: 1.125rem; font-weight: 500; text-decoration: none; }
 .eyebrow, .question-number, .secondary-label { font-size: 0.75rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; }
 .page-stack { display: grid; gap: var(--space-8); margin: 0 auto; max-width: var(--content-width); padding: clamp(2rem, 6vw, 5rem) var(--space-6); }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 500; line-height: 1.18; }

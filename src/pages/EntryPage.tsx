@@ -22,7 +22,6 @@ export function EntryPage() {
   return (
     <div className="entry-page page-stack">
       <header className="entry-intro">
-        <p className="eyebrow">PFI · Standard model v28</p>
         <h1>Assess the commercial health of your payments franchise.</h1>
         <p className="lead">
           49 evidence-based questions across seven dimensions. Your responses are
